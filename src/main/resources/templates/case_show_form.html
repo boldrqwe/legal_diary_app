@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+
+<head th:replace="fragments/header :: head"></head>
+
+<body class="bg-light">
+
+<th:block th:if="${error}">
+    <div th:replace="fragments/header :: alert"></div>
+</th:block>
+
+<div th:replace="fragments/header :: header"></div>
+
+<div class="d-flex">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="content p-4">
+        <div class="text-center mb-4">
+            <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script>
+            <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- Responsive -->
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4097235499795154"
+                 data-ad-slot="5211442851" data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        <div>
+            <div>
+                <h2 class="mb-4" th:text="Case+':'+' '+ ${legal_case.name}"></h2>
+            </div>
+            <div>
+                <h3 class="mb-4" th:text="'№'+':'+' '+ ${legal_case.number}"></h3>
+            </div>
+            <div>
+                <h3 class="mb-4" th:text="Category+':'+' '+ ${legal_case.category}"></h3>
+            </div>
+
+            <div>
+                <h3 class="mb-4" th:text="Phase+':'+' '+ ${legal_case.phase}"></h3>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-white font-weight-bold">
+                Case contents
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header font-weight-bold" id="headingOne">
+                            <a href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
+                               aria-controls="collapseOne" class="collapsed">
+                                <div class="row">
+                                    <div class="col">
+                                        Events
+                                    </div>
+                                    <div class="col-auto collapse-icon"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                             data-parent="#accordionExample" style="">
+                            <div class="card-body">
+                                <div th:replace="fragments/event_table:: event_table_fragment"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header font-weight-bold" id="headingTwo">
+                            <a href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+                               aria-controls="collapseTwo" class="">
+                                <div class="row">
+                                    <div class="col">
+                                        Persons
+                                    </div>
+                                    <div class="col-auto collapse-icon"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                             data-parent="#accordionExample" style="">
+                            <div class="card-body">
+                                <div th:replace="fragments/persons_table :: persons_table_fragment"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header font-weight-bold" id="headingThree">
+                            <a href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
+                               aria-controls="collapseThree" class="collapsed">
+                                <div class="row">
+                                    <div class="col">
+                                        Documents
+                                    </div>
+                                    <div class="col-auto collapse-icon"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                             data-parent="#accordionExample" style="">
+                            <div class="card-body">
+                                <div th:replace="fragments/documents_table :: documents_table_fragment"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:replace="fragments/footer :: scripts"></script>
+
+</body>
+</html>
