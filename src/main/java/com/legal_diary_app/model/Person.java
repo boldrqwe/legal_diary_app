@@ -1,6 +1,8 @@
 package com.legal_diary_app.model;
 
 
+
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,33 +13,41 @@ import java.util.List;
 
 public class Person extends AbstractPersonality {
 
+
+
     @Column(name = "surname")
     private String surname;
+
 
     @Column(name = "name")
     private String name;
 
+
     @Column(name = "patronymic")
     private String patronymic;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "status_id")
     private PersonStatus personStatus;
+
 
     @Column(name = "birthday")
     private Date birthday;
 
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "persons_events",
             joinColumns = {@JoinColumn(name = "person_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
     private List<Event> events = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_diary_id")
     private UserDiary userDiary;
+
 
     @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
     private List<LegalCase> cases = new ArrayList<>();
@@ -77,6 +87,22 @@ public class Person extends AbstractPersonality {
         this.patronymic = patronymic;
     }
 
+    public PersonStatus getPersonStatus() {
+        return personStatus;
+    }
+
+    public void setPersonStatus(PersonStatus personStatus) {
+        this.personStatus = personStatus;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
     public List<Event> getEvents() {
         return events;
     }
@@ -93,27 +119,11 @@ public class Person extends AbstractPersonality {
         this.userDiary = userDiary;
     }
 
-    public PersonStatus getPersonStatus() {
-        return personStatus;
-    }
-
-    public void setPersonStatus(PersonStatus personStatus) {
-        this.personStatus = personStatus;
-    }
-
     public List<LegalCase> getCases() {
         return cases;
     }
 
     public void setCases(List<LegalCase> cases) {
         this.cases = cases;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
     }
 }

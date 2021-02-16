@@ -15,9 +15,7 @@ public class PersonStatusService extends AbstractService<PersonStatus, PersonSta
         super(personStatusRep);
     }
 
-    public PersonStatus add(PersonStatus person) {
-        return super.repository.save(person);
-    }
+
 
 
 }

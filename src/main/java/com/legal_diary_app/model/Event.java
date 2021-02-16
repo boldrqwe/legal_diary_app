@@ -1,5 +1,7 @@
 package com.legal_diary_app.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,10 +15,15 @@ public class Event extends AbstractItem {
     private String name;
 
     @Column(name = "beginning_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date beginningDate;
 
     @Column(name = "ending_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date endingDate;
+
+    @Column(name = "end_status")
+    private boolean endStatus = false;
 
     @ManyToMany(mappedBy = "events")
     private List<Person> persons = new ArrayList<>();
@@ -28,6 +35,8 @@ public class Event extends AbstractItem {
     @ManyToOne
     @JoinColumn(name = "case_id")
     private LegalCase legalCase;
+
+
 
 
     public Event() {
@@ -67,6 +76,14 @@ public class Event extends AbstractItem {
         this.endingDate = endingDate;
     }
 
+    public boolean isEndStatus() {
+        return endStatus;
+    }
+
+    public void setEndStatus(boolean endStatus) {
+        this.endStatus = endStatus;
+    }
+
     public List<Person> getPersons() {
         return persons;
     }
@@ -91,13 +108,5 @@ public class Event extends AbstractItem {
         this.legalCase = legalCase;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "beginningDate=" + beginningDate +
-                ", endingDate=" + endingDate +
-                ", persons=" + persons +
-                ", userDiary=" + userDiary +
-                '}';
-    }
+
 }

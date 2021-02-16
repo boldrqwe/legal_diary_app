@@ -18,8 +18,10 @@ public class PersonService extends AbstractService<Person, PersonRep> {
         return super.repository.findAllByLegalCaseId(id);
     }
 
-    public Person add(Person person) {
-        return super.repository.save(person);
+    public List<Person> findAllByEventId(long id){
+        return super.repository.findAllByEventId(id);
     }
+
+
 
 }

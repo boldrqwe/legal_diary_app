@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CategoryRep  extends CommonRep<Category> {
 
-    @Query(value = "select c from Category c join c.legalCases lc where lc.id = ?1 ")
+    @Query(value = "select c from Category c join c.legalCases lc where lc.id = ?1")
     Optional<Category> findCategoryByLegalCaseId(Long id);
 }

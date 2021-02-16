@@ -19,9 +19,5 @@ public class EventService extends AbstractService<Event, EventRep> {
     }
 
 
-    public Event add(Event event) {
-        return super.repository.save(event);
-    }
-
 
 }

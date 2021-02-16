@@ -9,7 +9,7 @@ import java.util.List;
 public class PersonStatus extends AbstractItem {
 
     @Column(name = "name")
-    private String name;
+    private String name="";
 
     @OneToMany(mappedBy = "personStatus")
     private List<Person> persons = new ArrayList<>();
@@ -35,5 +35,10 @@ public class PersonStatus extends AbstractItem {
 
     public void setPersons(List<Person> persons) {
         this.persons = persons;
+    }
+
+    @Override
+    public String toString() {
+        return name ;
     }
 }

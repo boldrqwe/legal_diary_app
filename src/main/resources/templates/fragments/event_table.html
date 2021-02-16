@@ -7,7 +7,7 @@
     <table class="table table-hover" cellspacing="0" width="100%">
         <thead>
         <tr>
-            <th>Id</th>
+            <th>№</th>
             <th>Name</th>
             <th>CreateDate</th>
             <th>BeginningDate</th>
@@ -17,17 +17,20 @@
         </thead>
         <tbody>
         <tr th:each="event : ${eventList}">
-            <td th:text="${event.id}"></td>
+
+            <td th:text="${eventList.indexOf(event)+1}"></td>
             <td th:text="${event.name}"></td>
             <td th:text="${event.createDate}"></td>
             <td th:text="${event.beginningDate}"></td>
             <td th:text="${event.endingDate}"></td>
             <td>
-                <a th:href="@{/event/edit/{id}(id=${event.id})}" class="btn btn-icon btn-pill btn-primary"
+                <a th:href="@{/events/{id}(id=${event.id})}" type="button"
+                   class="btn btn-primary btn-sm btn-pill">Show</a>
+                <a th:href="@{/events/edit/{id}(id=${event.id})}" class="btn btn-icon btn-pill btn-primary"
                    data-toggle="tooltip" title="Edit">
                     <i class="fa fa-fw fa-edit"></i>
                 </a>
-                <form th:action="@{/event/delete/{id}(id=${event.id})}" th:method="delete" class="d-inline">
+                <form th:action="@{/events/delete/{id}(id=${event.id})}" th:method="delete" class="d-inline">
                     <button class="btn btn-icon btn-pill btn-danger" data-toggle="tooltip" title="Delete">
                         <i class="fa fa-fw fa-trash"></i>
                     </button>
@@ -36,26 +39,13 @@
         </tr>
         </tbody>
     </table>
-    <div class="card mb-4">
-        <div class="card-header bg-white font-weight-bold">
-            Add new event
-        </div>
-        <div class="card-body">
-            <p>
 
-            <a class="btn btn-primary" type="submit" data-toggle="collapse" href="#collapseExample" role="button"
-               aria-expanded="false" aria-controls="collapseExample">
-                Add
-            </a>
-
-            </p>
-            <div class="collapse" id="collapseExample">
-                <div class="card card-body">
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+
+
+
+
+
 
 </body>
 </html>

@@ -24,9 +24,7 @@ public class CategoryService extends AbstractService<Category, CategoryRep> {
         return super.repository.findCategoryByLegalCaseId(id);
     }
 
-    public Category add(Category category){
-        return super.repository.save(category);
-    }
+
 
 
 }

@@ -14,24 +14,23 @@ public class LegalCase extends AbstractItem {
     @Column(name = "number")
     private String number;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "phase_id")
     private Phase phase;
 
     @OneToMany(mappedBy = "legalCase", cascade = CascadeType.MERGE)
-    List<Event> events = new ArrayList<>();
+    private List<Event> events = new ArrayList<>();
 
 
-
-    @ManyToMany
-    @JoinTable(name = "cases_persons",
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "persons_cases",
             joinColumns = {@JoinColumn(name = "person_id")},
             inverseJoinColumns = {@JoinColumn(name = "legalCase_id")})
-    List<Person> persons = new ArrayList<>();
+    private List<Person> persons = new ArrayList<>();
 
 
     public LegalCase() {

@@ -6,9 +6,7 @@
 
 <body class="bg-light">
 
-<th:block th:if="${error}">
-    <div th:replace="fragments/header :: alert"></div>
-</th:block>
+
 
 <div th:replace="fragments/header :: header"></div>
 
@@ -27,6 +25,7 @@
                         <label for="name">Category name</label>
                         <input th:field="*{name}" type="text" class="form-control" id="name"
                                placeholder="Enter category name" required>
+
                     </div>
                 </div>
 

@@ -1,6 +1,14 @@
 package com.legal_diary_app.controllers;
 
+import com.legal_diary_app.data.CaseData;
+import com.legal_diary_app.data.EventData;
+import com.legal_diary_app.data.PersonData;
+import com.legal_diary_app.data.PhaseData;
+import com.legal_diary_app.mappers.CommonMapper;
+import com.legal_diary_app.model.Event;
 import com.legal_diary_app.model.LegalCase;
+import com.legal_diary_app.model.Person;
+import com.legal_diary_app.model.Phase;
 import com.legal_diary_app.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +31,18 @@ public class CaseController {
     private PersonService personService;
     private CategoryService categoryService;
     private PhaseService phaseService;
+    private PersonStatusService personStatusService;
+
 
     public CaseController(CaseService caseService, EventService eventService, PersonService personService,
-                          CategoryService categoryService, PhaseService phaseService) {
+                          CategoryService categoryService, PhaseService phaseService,
+                          PersonStatusService personStatusService) {
         this.caseService = caseService;
         this.eventService = eventService;
         this.personService = personService;
         this.categoryService = categoryService;
         this.phaseService = phaseService;
+        this.personStatusService = personStatusService;
     }
 
     @GetMapping
@@ -48,17 +60,22 @@ public class CaseController {
         model.addAttribute("legal_case", legalCase);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("phases", phaseService.findAll());
+
         return "case_add_form";
     }
 
     @GetMapping("/{id}")
     public String showById(@PathVariable Long id, Model model) {
-        model.addAttribute("legal_case", caseService.findById(id).orElseThrow(RuntimeException::new));
+        CaseData caseData = CommonMapper.INSTANCE.toCaseData(caseService.findById(id).orElseThrow(RuntimeException::new));
+        model.addAttribute("legal_case", caseData);
         model.addAttribute("activePage", "Cases");
         model.addAttribute("edit", true);
-        model.addAttribute("eventList", eventService.findAllByLegalCaseId(id));
-        model.addAttribute("persons", personService.findAllByLegalCaseId(id));
+        model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(eventService.findAllByLegalCaseId(id)));
+        model.addAttribute("persons", CommonMapper.INSTANCE.toPersonDataList(personService.findAllByLegalCaseId(id)));
         model.addAttribute("documents", Arrays.asList("документ1", "документ2", "документ3", "документ4", "документ5"));
+        model.addAttribute("event", new EventData());
+        model.addAttribute("person", new PersonData());
+        model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(personStatusService.findAll()));
         return "case_show_form";
     }
 
@@ -66,7 +83,8 @@ public class CaseController {
     public String createCase(Model model, @PathVariable("id") Long id) {
         model.addAttribute("activePage", "Cases");
         model.addAttribute("edit", true);
-        model.addAttribute("legal_case", caseService.findById(id).orElseThrow(RuntimeException::new));
+        model.addAttribute("legal_case",
+                caseService.findById(id).orElseThrow(RuntimeException::new));
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("phases", phaseService.findAll());
         return "case_edit_form";
@@ -88,4 +106,44 @@ public class CaseController {
         }
         return "redirect:/legal_cases";
     }
+
+    @PostMapping("/add_event")
+    public String addEvent(Model model, EventData eventData) {
+        model.addAttribute("activePage", "Cases");
+        Event event = CommonMapper.INSTANCE.toEvent(eventData);
+        eventService.add(event);
+        return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
+    }
+
+    @PostMapping("/add_person")
+    public String addPerson(Model model, PersonData personData) {
+        Person person = CommonMapper.INSTANCE.toPerson(personData);
+        personService.add(person);
+        LegalCase legalCase = caseService.findById(personData.getCases().get(0).getId()).get();
+        legalCase.getPersons().add(person);
+        caseService.add(legalCase);
+        model.addAttribute("activePage", "Cases");
+        return "redirect:/legal_cases/" + personData.getCases().get(0).getId();
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        caseService.deleteById(id);
+        return "redirect:/legal_cases";
+    }
+
+    @GetMapping("/add_phase")
+    public String addPhase(Model model) {
+        model.addAttribute("phase", new PhaseData());
+        return "phase_add_form";
+    }
+
+    @PostMapping("/add_phase")
+    public String addPhase(PhaseData phaseData) {
+        Phase phase = CommonMapper.INSTANCE.toPhase(phaseData);
+        phaseService.add(phase);
+        return "redirect:/phase_add_form";
+    }
+
+
 }

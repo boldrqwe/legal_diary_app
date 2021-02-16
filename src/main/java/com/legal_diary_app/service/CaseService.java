@@ -13,9 +13,6 @@ public class CaseService extends AbstractService<LegalCase, CaseRep> {
     }
 
 
-    public LegalCase add(LegalCase legalCase) {
-        return super.repository.save(legalCase);
-    }
 
 
 }

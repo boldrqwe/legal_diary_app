@@ -16,9 +16,7 @@ public class PhaseService extends AbstractService<Phase, PhaseRep> {
         super(phaseRep);
     }
 
-    public Phase add(Phase category){
-        return super.repository.save(category);
-    }
+
 
 
 }

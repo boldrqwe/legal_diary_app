@@ -13,8 +13,6 @@ public class UserDiaryService extends AbstractService<UserDiary, UserDiaryRep> {
     }
 
 
-    public UserDiary add(UserDiary userDiary) {
-        return super.repository.save(userDiary);
-    }
+
 
 }

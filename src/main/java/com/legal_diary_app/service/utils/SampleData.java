@@ -56,10 +56,10 @@ public class SampleData {
         user1.getRoles().add(role1);
         user2.getRoles().add(role2);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-        Date bd = sdf.parse("2021-01-01 12:30");
-        Date ed = sdf.parse("2021-01-02 12:45");
+        Date bd = sdf.parse("01.01.2021 12:30");
+        Date ed = sdf.parse("01.01.2021 12:45");
 
 
         Event event = new Event();
@@ -139,7 +139,7 @@ public class SampleData {
                 person10, person11));
         legalCase.setPersons(Arrays.asList(person1));
 
-
+        categoryRep.saveAll(Arrays.asList(category, category1, category2, category3));
         eventRep.saveAll(Arrays.asList(event, event2, event3));
         event.setLegalCase(legalCase);
         event2.setLegalCase(legalCase);
@@ -149,7 +149,7 @@ public class SampleData {
         eventRep.saveAll(Arrays.asList(event, event2, event3));
 
 
-        categoryRep.saveAll(Arrays.asList(category, category1, category2, category3));
+
 
 
         roleRep.save(role1);

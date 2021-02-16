@@ -14,7 +14,7 @@ public interface CommonService <E extends AbstractItem> {
 
      Optional<E> findById(Long id);
 
-
+     E add(E type);
 
 
      void deleteById(Long id);

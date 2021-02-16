@@ -28,12 +28,6 @@
             <a th:href="@{/legal_cases/edit/{id}(id=${c.id})}" class="btn btn-icon btn-pill btn-primary" data-toggle="tooltip" title="Edit">
                 <i class="fa fa-fw fa-edit"></i>
             </a>
-
-            <form th:action="@{/legal_cases/delete/{id}(id=${c.id})}" th:method="delete" class="d-inline">
-                <button class="btn btn-icon btn-pill btn-danger" data-toggle="tooltip" title="Delete">
-                    <i class="fa fa-fw fa-trash"></i>
-                </button>
-            </form>
         </td>
     </tr>
     </tbody>
