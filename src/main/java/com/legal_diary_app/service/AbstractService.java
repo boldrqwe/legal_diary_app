@@ -39,6 +39,8 @@ public abstract class AbstractService<E extends AbstractItem, R extends CommonRe
         repository.deleteById(id);
     }
 
-    ;
+    public List<E> saveAll(List<E> typeList){
+        return repository.saveAll(typeList);
+    }
 
 }

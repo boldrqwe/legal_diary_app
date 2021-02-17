@@ -60,6 +60,7 @@ public class SampleData {
 
         Date bd = sdf.parse("01.01.2021 12:30");
         Date ed = sdf.parse("01.01.2021 12:45");
+        Date ed2 = sdf.parse("28.02.2021 12:45");
 
 
         Event event = new Event();
@@ -76,7 +77,7 @@ public class SampleData {
 
         Event event3 = new Event();
         event3.setBeginningDate(bd);
-        event3.setEndingDate(ed);
+        event3.setEndingDate(ed2);
         event3.setName("Продажа квартиры3");
 
 

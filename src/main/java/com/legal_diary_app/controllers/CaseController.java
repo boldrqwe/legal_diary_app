@@ -14,12 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 
 @Controller
@@ -108,7 +107,10 @@ public class CaseController {
     }
 
     @PostMapping("/add_event")
-    public String addEvent(Model model, EventData eventData) {
+    public String addEvent(Model model, @Valid @ModelAttribute EventData eventData, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
+        }
         model.addAttribute("activePage", "Cases");
         Event event = CommonMapper.INSTANCE.toEvent(eventData);
         eventService.add(event);

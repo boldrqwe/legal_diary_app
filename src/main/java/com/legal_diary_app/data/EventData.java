@@ -1,5 +1,6 @@
 package com.legal_diary_app.data;
 
+import com.legal_diary_app.data.utils.InvalidDateException;
 import com.legal_diary_app.model.AbstractItem;
 import com.legal_diary_app.model.LegalCase;
 import com.legal_diary_app.model.Person;
@@ -63,7 +64,13 @@ public class EventData extends AbstractItem implements Serializable {
         return beginningDate;
     }
 
+
     public void setBeginningDate(Date beginningDate) {
+       if(beginningDate != null && endingDate != null) {
+           if (beginningDate.after(endingDate)) {
+               throw new InvalidDateException("Beginning date should be before endingDate!");
+           }
+       }
         this.beginningDate = beginningDate;
     }
 
@@ -72,6 +79,11 @@ public class EventData extends AbstractItem implements Serializable {
     }
 
     public void setEndingDate(Date endingDate) {
+        if(endingDate != null && beginningDate != null) {
+            if (endingDate.before(beginningDate)) {
+                throw new InvalidDateException("EndingDate should be after beginningDate!");
+            }
+        }
         this.endingDate = endingDate;
     }
 
