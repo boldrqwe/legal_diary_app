@@ -13,4 +13,6 @@ public interface EventRep extends CommonRep<Event> {
 
     List<Event> findAllByLegalCaseId(Long id);
 
+    List<Event> findAllByEndStatus(boolean isEnd);
+
 }

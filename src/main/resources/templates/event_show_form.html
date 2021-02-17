@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+
+<head th:replace="fragments/header :: head"></head>
+
+<body class="bg-light">
+
+<th:block th:if="${error}">
+    <div th:replace="fragments/header :: alert"></div>
+</th:block>
+
+<div th:replace="fragments/header :: header"></div>
+
+<div class="d-flex">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <div class="content p-4">
+
+        <div>
+            <h2 class="mb-4" th:text="Event+':'+' '+ ${event.name}"></h2>
+        </div>
+        <div>
+            <h3 class="mb-4" th:text="BeginningDate+':'+' '+ ${event.beginningDate}"></h3>
+        </div>
+        <div>
+            <h3 class="mb-4" th:text="EndingDate+':'+' '+ ${event.endingDate}"></h3>
+        </div>
+        <div>
+            <h3 class="mb-4" th:text="LegalCase+':'+' '+ ${event.legalCase.name}"></h3>
+        </div>
+        <div>
+            <h3 class="mb-4" th:text="'Work'+' '+'status' +':'+' '+ ${event.complete ? 'complete' : 'in work'}"></h3>
+        </div>
+        <div>
+            <h3 class="mb-4" th:text="'Date'+' '+'status'+':'+' '+ ${event.endStatus ? 'ended' : 'in work'}"></h3>
+        </div>
+        <div class="card">
+            <div class="card-header bg-white font-weight-bold">
+                Case contents
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                        <div class="card-header font-weight-bold" id="headingTwo">
+                            <a href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+                               aria-controls="collapseTwo" class="">
+                                <div class="row">
+                                    <div class="col">
+                                        Persons
+                                    </div>
+                                    <div class="col-auto collapse-icon"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                             data-parent="#accordionExample" style="">
+                            <div class="card-body">
+                                <div th:replace="fragments/persons_table :: persons_table_fragment"></div>
+                                <form th:object="${person}" method="post" th:action="@{/events/add_person}"
+                                      enctype="multipart/form-data">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <input th:type="hidden" th:field="*{id}">
+                                            <select class="form-control display d-lg-none" id="event_case"
+                                                    th:field="*{cases}" required>
+                                                <option
+                                                        th:text="${event.legalCase.name}"
+                                                        th:value="${event.legalCase.id}"></option>
+                                            </select>
+                                            <select class="form-control display d-lg-none" id="event"
+                                                    th:field="*{events}" required>
+                                                <option
+                                                        th:text="${event.name}"
+                                                        th:value="${event.id}"></option>
+                                            </select>
+                                            <div class="form-group">
+                                                <label for="person_surname">Surname</label>
+                                                <input th:field="*{surname}" type="text" class="form-control"
+                                                       id="person_surname"
+                                                       placeholder="Enter person surname" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="person_name">Name</label>
+                                                <input th:field="*{name}" type="text" class="form-control"
+                                                       id="person_name"
+                                                       placeholder="Enter person name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="person_name">Patronymic</label>
+                                                <input th:field="*{patronymic}" type="text" class="form-control"
+                                                       id="person_patronymic"
+                                                       placeholder="Enter person patronymic" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="person_name">Phone</label>
+                                                <input th:field="*{phone}" type="text" class="form-control"
+                                                       id="person_phone"
+                                                       placeholder="Enter person patronymic" required>
+                                            </div>
+                                            <select class="form-control display" id="person_status"
+                                                    th:field="*{personStatus}" required>
+                                                <option
+                                                        th:each="status: ${statusList}"
+                                                        th:text="${status.name}"
+                                                        th:value="${status.id}"></option>
+                                            </select>
+                                            <div class="card-footer bg-white">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header font-weight-bold" id="headingThree">
+                            <a href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
+                               aria-controls="collapseThree" class="collapsed">
+                                <div class="row">
+                                    <div class="col">
+                                        Documents
+                                    </div>
+                                    <div class="col-auto collapse-icon"></div>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                             data-parent="#accordionExample" style="">
+                            <div class="card-body">
+                                <div th:replace="fragments/documents_table :: documents_table_fragment"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:replace="fragments/footer :: scripts"></script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package com.legal_diary_app.model;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,11 +21,13 @@ public abstract class AbstractItem {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date createDate;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modify_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date modifyDate;
 
     public Long getId() {

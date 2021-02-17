@@ -18,6 +18,10 @@ public class EventService extends AbstractService<Event, EventRep> {
         return super.repository.findAllByLegalCaseId(id);
     }
 
+    public List<Event> findAllByEndStatus(boolean isEnd){
+        return super.repository.findAllByEndStatus(isEnd);
+    }
+
 
 
 }

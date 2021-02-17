@@ -5,7 +5,6 @@ import com.legal_diary_app.service.EventService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +20,11 @@ public class DateStatusValidator {
     }
 
     @Scheduled(fixedRate = 5000)
-    public void validateDateStatus(){
-        List<Event> eventList = eventService.findAll();
-       eventList = eventList.stream().filter(event -> event.getEndingDate().before(new Date())).collect(Collectors.toList());
-        for (Event event:eventList) {
+    public void validateDateStatus() {
+        List<Event> eventList = eventService.findAllByEndStatus(false);
+        eventList = eventList.stream().filter(event -> event.getEndingDate()
+                .before(new Date())).collect(Collectors.toList());
+        for (Event event : eventList) {
             event.setEndStatus(true);
         }
         eventService.saveAll(eventList);

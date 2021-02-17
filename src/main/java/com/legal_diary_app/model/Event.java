@@ -15,15 +15,22 @@ public class Event extends AbstractItem {
     private String name;
 
     @Column(name = "beginning_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date beginningDate;
 
     @Column(name = "ending_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date endingDate;
 
+    @Column(name = "remider_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
+    private Date reminderDate;
+
     @Column(name = "end_status")
-    private boolean endStatus = false;
+    private Boolean endStatus = false;
+
+    @Column(name = "complete_status")
+    private Boolean complete = false;
 
     @ManyToMany(mappedBy = "events")
     private List<Person> persons = new ArrayList<>();
@@ -76,12 +83,29 @@ public class Event extends AbstractItem {
         this.endingDate = endingDate;
     }
 
-    public boolean isEndStatus() {
+    public Date getReminderDate() {
+        return reminderDate;
+    }
+
+    public void setReminderDate(Date reminderDate) {
+        this.reminderDate = reminderDate;
+    }
+
+
+    public Boolean getEndStatus() {
         return endStatus;
     }
 
-    public void setEndStatus(boolean endStatus) {
+    public void setEndStatus(Boolean endStatus) {
         this.endStatus = endStatus;
+    }
+
+    public Boolean getComplete() {
+        return complete;
+    }
+
+    public void setComplete(Boolean complete) {
+        this.complete = complete;
     }
 
     public List<Person> getPersons() {

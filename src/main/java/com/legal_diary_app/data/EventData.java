@@ -5,42 +5,35 @@ import com.legal_diary_app.model.AbstractItem;
 import com.legal_diary_app.model.LegalCase;
 import com.legal_diary_app.model.Person;
 import com.legal_diary_app.model.UserDiary;
-import com.legal_diary_app.service.CaseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Component
-public class EventData extends AbstractItem implements Serializable {
+public class EventData extends AbstractItem {
 
-    private CaseService caseService;
-
-    @Autowired
-    public EventData(CaseService caseService) {
-        this.caseService = caseService;
-    }
-
-    public EventData() {
-    }
 
 
     private String name;
 
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date beginningDate;
 
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date endingDate;
 
-    private boolean endStatus = false;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
+    private Date reminderDate;
 
+    private Boolean endStatus = false;
+
+    private Boolean complete = false;
 
     private List<Person> persons = new ArrayList<>();
 
@@ -50,7 +43,9 @@ public class EventData extends AbstractItem implements Serializable {
 
     private LegalCase legalCase;
 
-    private Long legalCaseId;
+    public EventData() {
+    }
+
 
     public String getName() {
         return name;
@@ -66,11 +61,11 @@ public class EventData extends AbstractItem implements Serializable {
 
 
     public void setBeginningDate(Date beginningDate) {
-       if(beginningDate != null && endingDate != null) {
-           if (beginningDate.after(endingDate)) {
-               throw new InvalidDateException("Beginning date should be before endingDate!");
-           }
-       }
+        if (beginningDate != null && endingDate != null) {
+            if (beginningDate.after(endingDate)) {
+                throw new InvalidDateException("Beginning date should be before endingDate!");
+            }
+        }
         this.beginningDate = beginningDate;
     }
 
@@ -79,7 +74,7 @@ public class EventData extends AbstractItem implements Serializable {
     }
 
     public void setEndingDate(Date endingDate) {
-        if(endingDate != null && beginningDate != null) {
+        if (endingDate != null && beginningDate != null) {
             if (endingDate.before(beginningDate)) {
                 throw new InvalidDateException("EndingDate should be after beginningDate!");
             }
@@ -87,12 +82,28 @@ public class EventData extends AbstractItem implements Serializable {
         this.endingDate = endingDate;
     }
 
-    public boolean isEndStatus() {
+    public Date getReminderDate() {
+        return reminderDate;
+    }
+
+    public void setReminderDate(Date reminderDate) {
+        this.reminderDate = reminderDate;
+    }
+
+    public Boolean getEndStatus() {
         return endStatus;
     }
 
-    public void setEndStatus(boolean endStatus) {
+    public void setEndStatus(Boolean endStatus) {
         this.endStatus = endStatus;
+    }
+
+    public Boolean getComplete() {
+        return complete;
+    }
+
+    public void setComplete(Boolean complete) {
+        this.complete = complete;
     }
 
     public List<Person> getPersons() {
@@ -119,15 +130,5 @@ public class EventData extends AbstractItem implements Serializable {
         this.legalCase = legalCase;
     }
 
-    public Long getLegalCaseId() {
-        return legalCaseId;
-    }
 
-    public void setLegalCaseId(Long legalCaseId) {
-        this.legalCaseId = legalCaseId;
-    }
-
-    public void setLegalCaseById(Long id) {
-        this.legalCase = caseService.findById(id).get();
-    }
 }
