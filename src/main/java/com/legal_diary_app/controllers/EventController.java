@@ -63,6 +63,13 @@ public class EventController {
         return "event_show_form";
     }
 
+    @GetMapping("/ended")
+    public String showEndedEvents(Model model){
+        model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(eventService.findAllByEndStatus(true)));
+
+        return "events_ended";
+    }
+
     @PostMapping("/add_person")
     public String addPerson(Model model, PersonData personData) {
         Person person = CommonMapper.INSTANCE.toPerson(personData);
@@ -72,5 +79,4 @@ public class EventController {
         personService.add(person);
 return "redirect:/events/"+event.getId();
     }
-Exception
 }
