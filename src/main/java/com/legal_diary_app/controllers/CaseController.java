@@ -31,22 +31,24 @@ public class CaseController {
     private CategoryService categoryService;
     private PhaseService phaseService;
     private PersonStatusService personStatusService;
+    private DocumentService documentService;
 
 
     public CaseController(CaseService caseService, EventService eventService, PersonService personService,
                           CategoryService categoryService, PhaseService phaseService,
-                          PersonStatusService personStatusService) {
+                          PersonStatusService personStatusService, DocumentService documentService) {
         this.caseService = caseService;
         this.eventService = eventService;
         this.personService = personService;
         this.categoryService = categoryService;
         this.phaseService = phaseService;
         this.personStatusService = personStatusService;
+        this.documentService = documentService;
     }
 
     @GetMapping
     public String showCases(Model model) {
-        model.addAttribute("legal_cases", caseService.findAll());
+        model.addAttribute("legal_cases", CommonMapper.INSTANCE.toCaseDataList(caseService.findAll()));
         model.addAttribute("activePage", "Cases");
         return "legal_cases";
     }
@@ -71,7 +73,7 @@ public class CaseController {
         model.addAttribute("edit", true);
         model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(eventService.findAllByLegalCaseId(id)));
         model.addAttribute("persons", CommonMapper.INSTANCE.toPersonDataList(personService.findAllByLegalCaseId(id)));
-        model.addAttribute("documents", Arrays.asList("документ1", "документ2", "документ3", "документ4", "документ5"));
+        model.addAttribute("documents", documentService.findAllByLegalCaseId(id));
         model.addAttribute("event", new EventData());
         model.addAttribute("person", new PersonData());
         model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(personStatusService.findAll()));
@@ -94,7 +96,7 @@ public class CaseController {
         model.addAttribute("activePage", "Cases");
 
         try {
-            caseService.add(legalCase);
+            caseService.save(legalCase);
         } catch (Exception ex) {
             logger.error("Problem with creating or update case", ex);
             redirectAttributes.addFlashAttribute("error", true);
@@ -108,22 +110,22 @@ public class CaseController {
 
     @PostMapping("/add_event")
     public String addEvent(Model model, @Valid @ModelAttribute EventData eventData, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
         }
         model.addAttribute("activePage", "Cases");
         Event event = CommonMapper.INSTANCE.toEvent(eventData);
-        eventService.add(event);
+        eventService.save(event);
         return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
     }
 
     @PostMapping("/add_person")
     public String addPerson(Model model, PersonData personData) {
         Person person = CommonMapper.INSTANCE.toPerson(personData);
-        personService.add(person);
+        personService.save(person);
         LegalCase legalCase = caseService.findById(personData.getCases().get(0).getId()).get();
         legalCase.getPersons().add(person);
-        caseService.add(legalCase);
+        caseService.save(legalCase);
         model.addAttribute("activePage", "Cases");
         return "redirect:/legal_cases/" + personData.getCases().get(0).getId();
     }
@@ -143,7 +145,7 @@ public class CaseController {
     @PostMapping("/add_phase")
     public String addPhase(PhaseData phaseData) {
         Phase phase = CommonMapper.INSTANCE.toPhase(phaseData);
-        phaseService.add(phase);
+        phaseService.save(phase);
         return "redirect:/phase_add_form";
     }
 

@@ -19,7 +19,7 @@ public class DateStatusValidator {
         this.eventService = eventService;
     }
 
-    @Scheduled(fixedRate = 5000)
+
     public void validateDateStatus() {
         List<Event> eventList = eventService.findAllByEndStatus(false);
         eventList = eventList.stream().filter(event -> event.getEndingDate()
@@ -28,5 +28,10 @@ public class DateStatusValidator {
             event.setEndStatus(true);
         }
         eventService.saveAll(eventList);
+    }
+
+    @Scheduled(fixedRate = 5000)
+    public void enableValidateDateStatus() {
+        validateDateStatus();
     }
 }

@@ -32,6 +32,13 @@ public class LegalCase extends AbstractItem {
             inverseJoinColumns = {@JoinColumn(name = "legalCase_id")})
     private List<Person> persons = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "docs_cases",
+            joinColumns = {@JoinColumn(name = "doc_id")},
+            inverseJoinColumns = {@JoinColumn(name = "legalCase_id")})
+    List<Document> documents = new ArrayList<>();
+
+
 
     public LegalCase() {
 
@@ -96,5 +103,13 @@ public class LegalCase extends AbstractItem {
 
     public void setPersons(List<Person> persons) {
         this.persons = persons;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 }

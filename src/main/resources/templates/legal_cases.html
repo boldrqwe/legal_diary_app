@@ -12,7 +12,7 @@
     <div th:replace="fragments/sidebar :: sidebar"></div>
 
     <div class="content p-4">
-        <h2 class="mb-4">Categories list</h2>
+        <h2 class="mb-4">Case list</h2>
 
         <div class="card mb-4">
 
@@ -32,7 +32,7 @@
 <script th:src="@{/js/datatables.min.js}"></script>
 <script>
     $(document).ready(function () {
-        $('#categories').DataTable();
+        $('#legal_cases').DataTable();
     });
 </script>
 

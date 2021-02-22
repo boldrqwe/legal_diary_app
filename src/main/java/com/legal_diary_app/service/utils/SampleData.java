@@ -25,11 +25,12 @@ public class SampleData {
     private CategoryRep categoryRep;
     private PersonStatusRep personStatusRep;
     private PhaseRep phaseRep;
+    private DocumentRep documentRep;
 
 
     public SampleData(EventRep eventRep, PersonRep personRep, RoleRep roleRep, UserRep userRep,
                       UserDiaryRep userDiaryRep, CaseRep caseRep, CategoryRep categoryRep,
-                      PersonStatusRep personStatusRep, PhaseRep phaseRep) {
+                      PersonStatusRep personStatusRep, PhaseRep phaseRep, DocumentRep documentRep) {
         this.eventRep = eventRep;
         this.personRep = personRep;
         this.roleRep = roleRep;
@@ -39,6 +40,7 @@ public class SampleData {
         this.categoryRep = categoryRep;
         this.personStatusRep = personStatusRep;
         this.phaseRep = phaseRep;
+        this.documentRep = documentRep;
     }
 
     @PostConstruct
@@ -158,6 +160,10 @@ public class SampleData {
 
         roleRep.save(role2);
         userRep.save(user2);
+
+        Document document = new Document("file","asd");
+
+        documentRep.save(document);
 
 
     }

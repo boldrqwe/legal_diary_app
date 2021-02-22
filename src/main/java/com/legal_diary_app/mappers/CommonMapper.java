@@ -64,4 +64,16 @@ public interface CommonMapper {
         return events.stream().map(event -> toEventData(event)).collect(Collectors.toList());
     }
 
+    DocumentData toDocData(Document document);
+
+    default List<DocumentData> toDocDataList(List<Document> documentList) {
+        return documentList.stream().map(document -> toDocData(document)).collect(Collectors.toList());
+    }
+
+    Document toDocument(DocumentData documentData);
+
+    default List<Document> toDocList(List<DocumentData> documentDataList) {
+        return documentDataList.stream().map(documentData -> toDocument(documentData)).collect(Collectors.toList());
+    }
+
 }

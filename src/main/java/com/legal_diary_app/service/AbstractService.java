@@ -4,6 +4,8 @@ import com.legal_diary_app.model.AbstractItem;
 import com.legal_diary_app.repository.CommonRep;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +27,7 @@ public abstract class AbstractService<E extends AbstractItem, R extends CommonRe
         return repository.findById(id);
     }
 
-    public E add(E type){ return repository.save(type);}
+    public E save(E type){ return repository.save(type);}
 
     public R getRepository() {
         return repository;
@@ -42,5 +44,6 @@ public abstract class AbstractService<E extends AbstractItem, R extends CommonRe
     public List<E> saveAll(List<E> typeList){
         return repository.saveAll(typeList);
     }
+
 
 }
