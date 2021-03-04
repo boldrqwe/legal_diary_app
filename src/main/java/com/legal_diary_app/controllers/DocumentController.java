@@ -17,13 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletContext;
 import javax.validation.Valid;
 import java.io.*;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/documents")
 public class DocumentController {
 
-   private final DocumentService documentService;
+    private final DocumentService documentService;
     private final ServletContext servletContext;
 
 
@@ -41,11 +43,8 @@ public class DocumentController {
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("name") String name,
-                                   @RequestParam("file") MultipartFile file
-                                   ) {
-//        if (bindingResult.hasErrors()) {
-//            return "redirect:/documents";
-//        } else {
+                                   @Valid @RequestParam("file") MultipartFile file
+    ) {
             if (!file.isEmpty()) {
                 String filePath = "files/" + UUID.randomUUID() + (file.getOriginalFilename()).substring(file
                         .getOriginalFilename().lastIndexOf("."));
@@ -56,18 +55,18 @@ public class DocumentController {
                     documentService.save(name, filePath);
                     return "redirect:/documents";
                 } catch (Exception e) {
-                    return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+                    throw new RuntimeException("Вам не удалось загрузить " + name + " => " + e.getMessage());
                 }
             } else {
-                return "Вам не удалось загрузить " + name + " потому что файл пустой.";
+                return "redirect:/documents";
             }
-//        }
+
 
     }
 
     @GetMapping("/download/{id}")
     public ResponseEntity<InputStreamResource> downloadFile1(@PathVariable Long id) throws IOException {
-      Document document = documentService.findById(id).get();
+        Document document = documentService.findById(id).get();
 
         MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, document.getName());
 
@@ -75,11 +74,11 @@ public class DocumentController {
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         return ResponseEntity.ok()
-                // Content-Disposition
+
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
-                // Content-Type
+
                 .contentType(mediaType)
-                // Contet-Length
+               
                 .contentLength(file.length()) //
                 .body(resource);
     }

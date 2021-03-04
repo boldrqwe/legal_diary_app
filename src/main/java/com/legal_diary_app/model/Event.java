@@ -43,7 +43,11 @@ public class Event extends AbstractItem {
     @JoinColumn(name = "case_id")
     private LegalCase legalCase;
 
-
+    @ManyToMany
+    @JoinTable(name = "events_docs",
+            joinColumns = @JoinColumn(name = "doc_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private List<Document> documents = new ArrayList<>();
 
 
     public Event() {
@@ -132,5 +136,11 @@ public class Event extends AbstractItem {
         this.legalCase = legalCase;
     }
 
+    public List<Document> getDocuments() {
+        return documents;
+    }
 
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
 }

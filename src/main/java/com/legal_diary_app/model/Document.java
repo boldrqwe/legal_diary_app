@@ -18,6 +18,8 @@ public class Document extends AbstractItem {
     @ManyToMany(mappedBy = "documents", cascade = CascadeType.PERSIST)
     List<LegalCase> legalCases = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "documents", cascade = CascadeType.MERGE)
+    List<Event> events = new ArrayList<>();
 
     public Document(String name, String filePath) {
         this.name = name;
@@ -49,5 +51,13 @@ public class Document extends AbstractItem {
 
     public void setLegalCases(List<LegalCase> legalCases) {
         this.legalCases = legalCases;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }

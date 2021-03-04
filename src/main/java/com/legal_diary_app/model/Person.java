@@ -13,8 +13,6 @@ import java.util.List;
 
 public class Person extends AbstractPersonality {
 
-
-
     @Column(name = "surname")
     private String surname;
 
@@ -51,6 +49,12 @@ public class Person extends AbstractPersonality {
 
     @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
     private List<LegalCase> cases = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "persons_docs",
+    joinColumns = @JoinColumn(name = "doc_id"),
+    inverseJoinColumns = @JoinColumn(name = "person_id"))
+    private List<Document> documents = new ArrayList<>();
 
 
     public Person() {
@@ -125,5 +129,13 @@ public class Person extends AbstractPersonality {
 
     public void setCases(List<LegalCase> cases) {
         this.cases = cases;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 }
