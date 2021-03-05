@@ -30,7 +30,7 @@ public class DateStatusValidator {
         eventService.saveAll(eventList);
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(cron = "${cron.expression}")
     public void enableValidateDateStatus() {
         validateDateStatus();
     }

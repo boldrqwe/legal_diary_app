@@ -1,25 +1,31 @@
 package com.legal_diary_app.controllers;
 
+import com.legal_diary_app.controllers.utils.MediaTypeUtils;
 import com.legal_diary_app.data.CaseData;
 import com.legal_diary_app.data.EventData;
 import com.legal_diary_app.data.PersonData;
 import com.legal_diary_app.data.PhaseData;
 import com.legal_diary_app.mappers.CommonMapper;
-import com.legal_diary_app.model.Event;
-import com.legal_diary_app.model.LegalCase;
-import com.legal_diary_app.model.Person;
-import com.legal_diary_app.model.Phase;
+import com.legal_diary_app.model.*;
 import com.legal_diary_app.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
-import java.util.Arrays;
+import java.io.*;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/legal_cases")
@@ -32,11 +38,13 @@ public class CaseController {
     private PhaseService phaseService;
     private PersonStatusService personStatusService;
     private DocumentService documentService;
+    private final ServletContext servletContext;
 
 
     public CaseController(CaseService caseService, EventService eventService, PersonService personService,
                           CategoryService categoryService, PhaseService phaseService,
-                          PersonStatusService personStatusService, DocumentService documentService) {
+                          PersonStatusService personStatusService, DocumentService documentService,
+                          ServletContext servletContext) {
         this.caseService = caseService;
         this.eventService = eventService;
         this.personService = personService;
@@ -44,6 +52,7 @@ public class CaseController {
         this.phaseService = phaseService;
         this.personStatusService = personStatusService;
         this.documentService = documentService;
+        this.servletContext = servletContext;
     }
 
     @GetMapping
@@ -61,7 +70,6 @@ public class CaseController {
         model.addAttribute("legal_case", legalCase);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("phases", phaseService.findAll());
-
         return "case_add_form";
     }
 
@@ -108,6 +116,8 @@ public class CaseController {
         return "redirect:/legal_cases";
     }
 
+
+
     @PostMapping("/add_event")
     public String addEvent(Model model, @Valid @ModelAttribute EventData eventData, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -147,6 +157,45 @@ public class CaseController {
         Phase phase = CommonMapper.INSTANCE.toPhase(phaseData);
         phaseService.save(phase);
         return "redirect:/phase_add_form";
+    }
+
+    @PostMapping("/upload/{id}")
+    public String handleFileUpload(@RequestParam("file") List<MultipartFile> files, @PathVariable Long id) {
+        LegalCase legalCase = caseService.findById(id).get();
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                String filePath = "files/" + UUID.randomUUID() + (file.getOriginalFilename()).substring(file
+                        .getOriginalFilename().lastIndexOf("."));
+                try (BufferedOutputStream stream =
+                             new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
+                    byte[] bytes = file.getBytes();
+                    stream.write(bytes);
+                    Document document = new Document(file.getOriginalFilename(), filePath);
+                    document.getLegalCases().add(legalCase);
+                    legalCase.getDocuments().add(document);
+                    documentService.save(document);
+                    caseService.save(legalCase);
+                } catch (Exception e) {
+                    throw new RuntimeException("Вам не удалось загрузить " + file.getOriginalFilename() + " => " + e.getMessage());
+                }
+            }
+        } else {
+            return "redirect:/legal_cases/" + legalCase.getId();
+        }
+        return "redirect:/legal_cases/" + legalCase.getId();
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
+        Document document = documentService.findById(id).get();
+        MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, document.getName());
+        File file = new File(document.getFilePath());
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                .contentType(mediaType)
+                .contentLength(file.length())
+                .body(resource);
     }
 
 

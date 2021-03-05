@@ -191,7 +191,44 @@
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                              data-parent="#accordionExample" style="">
                             <div class="card-body">
-                                <div th:replace="fragments/documents_table :: documents_table_fragment"></div>
+                                <div class="card-link mb-4">
+                                    <form  method="POST" enctype="multipart/form-data"
+                                           th:action="@{/legal_cases/upload/{id}(id=${legal_case.id})}">
+                                        File to upload: <input type="file" name="file" required multiple>
+                                        <!--                        <p th:if="${#fields.hasErrors()}" th:errors="file"></p>-->
+                                        <br/> <input class="btn btn-primary" type="submit"
+                                                     value="Upload"> Press here to upload the file!
+                                    </form>
+                                </div>
+                                <table  id="documents" class="table table-hover" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <th>№</th>
+                                    <th>Name</th>
+                                    <th>CreateDate</th>
+                                    <th class="actions">Actions</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="document : ${documents}">
+                                        <td th:text="${documents.indexOf(document)+1}"></td>
+                                        <td th:text="${document.name}"></td>
+                                        <td th:text="${document.createDate}"></td>
+                                        <td>
+                                            <a th:title="Download" download th:href="@{/legal_cases/download/{id}(id=${document.id})}"><i class="btn btn-primary btn-sm btn-pill">Download</i></a>
+                                            <a th:href="@{/legal_cases/{id}/edit}" class="btn btn-icon btn-pill btn-primary"
+                                               data-toggle="tooltip" title="Edit">
+                                                <i class="fa fa-fw fa-edit"></i>
+                                            </a>
+                                            <form th:action="@{/legal_cases/{id}/delete}" th:method="delete"
+                                                  class="d-inline">
+                                                <button class="btn btn-icon btn-pill btn-danger" data-toggle="tooltip" title="Delete">
+                                                    <i class="fa fa-fw fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
