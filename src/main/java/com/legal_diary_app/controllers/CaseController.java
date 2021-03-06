@@ -117,7 +117,6 @@ public class CaseController {
     }
 
 
-
     @PostMapping("/add_event")
     public String addEvent(Model model, @Valid @ModelAttribute EventData eventData, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

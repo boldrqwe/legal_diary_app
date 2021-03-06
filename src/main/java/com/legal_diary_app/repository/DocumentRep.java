@@ -13,4 +13,7 @@ public interface DocumentRep extends CommonRep<Document> {
     @Query(value = "select d from Document d join d.legalCases l where l.id = ?1")
     List<Document> findAllByLegalCaseId(Long id);
 
+    @Query(value = "SELECT d from Document d join d.events e where e.id =?1")
+    List<Document> findAllByEventId(Long id);
+
 }

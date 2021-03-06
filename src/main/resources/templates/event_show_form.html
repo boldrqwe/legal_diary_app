@@ -131,6 +131,14 @@
                              data-parent="#accordionExample" style="">
                             <div class="card-body">
                                 <div th:replace="fragments/documents_table :: documents_table_fragment"></div>
+                                <div class="card-link mb-4">
+                                    <form  method="POST" enctype="multipart/form-data"
+                                           th:action="@{/events/upload/{id}(id=${event.id})}">
+                                        File to upload: <input type="file" name="file" required multiple>
+                                        <br/> <input class="btn btn-primary" type="submit"
+                                                     value="Upload"> Press here to upload the file!
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -20,5 +20,8 @@ public class DocumentService extends AbstractService<Document, DocumentRep> {
         return super.repository.findAllByLegalCaseId(id);
     }
 
+    public List<Document> findAllByEventId(Long id){
+        return super.repository.findAllByEventId(id);
+    }
 
 }
