@@ -28,27 +28,75 @@ public class User extends AbstractPersonality {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles =new ArrayList<>();
 
-   @OneToMany
-   @JoinTable(
-           name = "user_diary",
-   joinColumns = @JoinColumn(name = "user_id"),
-   inverseJoinColumns = @JoinColumn(name = "user_diary_id"))
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "users_persons",
+    joinColumns = @JoinColumn(name = "users_id"),
+    inverseJoinColumns = @JoinColumn(name = "persons_id"))
+    private List<Person> persons = new ArrayList<>();
 
-   private List<UserDiary> userDiaries = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "users_events",
+            joinColumns = @JoinColumn(name = "users_id"),
+    inverseJoinColumns = @JoinColumn(name = "events_id"))
+    private List<Event> events = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "users_cases",
+    joinColumns = @JoinColumn(name = "usesr_id"),
+    inverseJoinColumns = @JoinColumn(name = "cases_id"))
+    private List<LegalCase> legalCases = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(name = "users_documents",
+            joinColumns = @JoinColumn(name = "usesr_id"),
+            inverseJoinColumns = @JoinColumn(name = "document_id"))
+    private List<Document> documents = new ArrayList<>();
+
+
 
 
     public User (){
 
     }
 
-    public User(boolean enabled, String password, Collection<Role> roles,
-                List<UserDiary> userDiaries) {
+    public User(boolean enabled, String password, Collection<Role> roles) {
         this.enabled = enabled;
         this.password = password;
         this.roles = roles;
-        this.userDiaries = userDiaries;
+
     }
 
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    public List<LegalCase> getLegalCases() {
+        return legalCases;
+    }
+
+    public void setLegalCases(List<LegalCase> legalCases) {
+        this.legalCases = legalCases;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public List<Person> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
+    }
 
     public String getUsername() {
         return username;
@@ -83,21 +131,14 @@ public class User extends AbstractPersonality {
         this.roles = roles;
     }
 
-    public List<UserDiary> getUserDiaries() {
-        return userDiaries;
-    }
-
-    public void setUserDiaries(List<UserDiary> userDiaries) {
-        this.userDiaries = userDiaries;
-    }
 
     @Override
     public String toString() {
         return "User{" +
-                "enabled=" + enabled +
+                "username='" + username + '\'' +
+                ", enabled=" + enabled +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
-                ", userDiaries=" + userDiaries +
                 '}';
     }
 }

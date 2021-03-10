@@ -35,9 +35,6 @@ public class Event extends AbstractItem {
     @ManyToMany(mappedBy = "events")
     private List<Person> persons = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "user_diary_id")
-    private UserDiary userDiary;
 
     @ManyToOne
     @JoinColumn(name = "case_id")
@@ -49,18 +46,29 @@ public class Event extends AbstractItem {
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Document> documents = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "events" ,cascade = CascadeType.MERGE)
+    private List<User> users = new ArrayList<>();
+
+
 
     public Event() {
 
     }
 
-    public Event(Date beginningDate, Date endingDate, List<Person> persons, UserDiary userDiary,
+    public Event(Date beginningDate, Date endingDate, List<Person> persons,
                  String name) {
         this.name = name;
         this.beginningDate = beginningDate;
         this.endingDate = endingDate;
         this.persons = persons;
-        this.userDiary = userDiary;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public String getName() {
@@ -120,13 +128,6 @@ public class Event extends AbstractItem {
         this.persons = persons;
     }
 
-    public UserDiary getUserDiary() {
-        return userDiary;
-    }
-
-    public void setUserDiary(UserDiary userDiary) {
-        this.userDiary = userDiary;
-    }
 
     public LegalCase getLegalCase() {
         return legalCase;

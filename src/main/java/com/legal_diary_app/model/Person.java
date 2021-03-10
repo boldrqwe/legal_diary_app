@@ -42,11 +42,6 @@ public class Person extends AbstractPersonality {
     private List<Event> events = new ArrayList<>();
 
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_diary_id")
-    private UserDiary userDiary;
-
-
     @ManyToMany(mappedBy = "persons", cascade = CascadeType.PERSIST)
     private List<LegalCase> cases = new ArrayList<>();
 
@@ -55,6 +50,10 @@ public class Person extends AbstractPersonality {
     joinColumns = @JoinColumn(name = "doc_id"),
     inverseJoinColumns = @JoinColumn(name = "person_id"))
     private List<Document> documents = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "persons" ,cascade = CascadeType.MERGE)
+    private List<User> users = new ArrayList<>();
+
 
 
     public Person() {
@@ -65,6 +64,14 @@ public class Person extends AbstractPersonality {
         this.surname = surname;
         this.name = name;
         this.patronymic = patronymic;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public String getSurname() {
@@ -115,13 +122,6 @@ public class Person extends AbstractPersonality {
         this.events = events;
     }
 
-    public UserDiary getUserDiary() {
-        return userDiary;
-    }
-
-    public void setUserDiary(UserDiary userDiary) {
-        this.userDiary = userDiary;
-    }
 
     public List<LegalCase> getCases() {
         return cases;

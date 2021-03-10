@@ -21,9 +21,21 @@ public class Document extends AbstractItem {
     @ManyToMany(mappedBy = "documents", cascade = CascadeType.MERGE)
     List<Event> events = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "documents", cascade = CascadeType.MERGE)
+    List<User> users = new ArrayList<>();
+
     public Document(String name, String filePath) {
         this.name = name;
         this.filePath = filePath;
+    }
+
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public Document() {

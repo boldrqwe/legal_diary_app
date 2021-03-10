@@ -3,6 +3,9 @@ package com.legal_diary_app.service;
 import com.legal_diary_app.model.AbstractItem;
 import com.legal_diary_app.repository.CommonRep;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -45,5 +48,9 @@ public abstract class AbstractService<E extends AbstractItem, R extends CommonRe
         return repository.saveAll(typeList);
     }
 
-
+    public String getAuthName() {
+    SecurityContext securityContext = new SecurityContextHolder().getContext();
+    Authentication authentication = securityContext.getAuthentication();
+    return authentication.getName();
+}
 }

@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 
@@ -21,13 +20,13 @@ public abstract class AbstractItem {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
+    @DateTimeFormat(pattern = "dd-M-yyyy hh:mm:ss")
     private Date createDate;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modify_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
+    @DateTimeFormat(pattern = "dd-M-yyyy hh:mm:ss")
     private Date modifyDate;
 
     public Long getId() {

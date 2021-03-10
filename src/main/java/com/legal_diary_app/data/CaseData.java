@@ -28,6 +28,16 @@ public class CaseData extends AbstractItem implements Serializable {
     private List<Person> persons = new ArrayList<>();
 
 
+    private List<User> users = new ArrayList<>();
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     public String getName() {
         return name;
     }

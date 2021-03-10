@@ -33,19 +33,6 @@
             </tr>
             </tbody>
         </table>
-    <br>
-    <div class="card-body">
-        <div class="card-link mb-4">
-            <form method="POST" enctype="multipart/form-data"
-                  th:action="@{/documents/upload}">
-                File to upload: <input type="file" name="file">
-                <!--                        <p th:if="${#fields.hasErrors()}" th:errors="file"></p>-->
-                <br/> Name: <input
-                    type="text" name="name"><br/> <br/> <input class="btn btn-primary" type="submit"
-                                                               value="Upload"> Press here to upload the file!
-            </form>
-        </div>
-    </div>
 </div>
 
 </body>

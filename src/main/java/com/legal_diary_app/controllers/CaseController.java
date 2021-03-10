@@ -1,54 +1,52 @@
 package com.legal_diary_app.controllers;
 
+import com.legal_diary_app.controllers.utils.MediaTypeUtils;
 import com.legal_diary_app.data.CaseData;
 import com.legal_diary_app.data.EventData;
 import com.legal_diary_app.data.PersonData;
 import com.legal_diary_app.data.PhaseData;
 import com.legal_diary_app.mappers.CommonMapper;
-import com.legal_diary_app.model.Event;
-import com.legal_diary_app.model.LegalCase;
-import com.legal_diary_app.model.Person;
-import com.legal_diary_app.model.Phase;
+import com.legal_diary_app.model.*;
 import com.legal_diary_app.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
-import java.util.Arrays;
+import java.io.*;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/legal_cases")
-public class CaseController {
+public class CaseController extends CommonController {
     private static final Logger logger = LoggerFactory.getLogger(CaseController.class);
-    private CaseService caseService;
-    private EventService eventService;
-    private PersonService personService;
-    private CategoryService categoryService;
-    private PhaseService phaseService;
-    private PersonStatusService personStatusService;
-    private DocumentService documentService;
-
 
     public CaseController(CaseService caseService, EventService eventService, PersonService personService,
                           CategoryService categoryService, PhaseService phaseService,
-                          PersonStatusService personStatusService, DocumentService documentService) {
-        this.caseService = caseService;
-        this.eventService = eventService;
-        this.personService = personService;
-        this.categoryService = categoryService;
-        this.phaseService = phaseService;
-        this.personStatusService = personStatusService;
-        this.documentService = documentService;
+                          PersonStatusService personStatusService, DocumentService documentService,
+                          ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, categoryService, phaseService, personStatusService,
+                documentService, servletContext, userService);
     }
+
 
     @GetMapping
     public String showCases(Model model) {
-        model.addAttribute("legal_cases", CommonMapper.INSTANCE.toCaseDataList(caseService.findAll()));
+        model.addAttribute("legal_cases", CommonMapper.INSTANCE.toCaseDataList(
+                caseService.findAllByUserName(getAuthName())));
         model.addAttribute("activePage", "Cases");
         return "legal_cases";
     }
@@ -61,7 +59,6 @@ public class CaseController {
         model.addAttribute("legal_case", legalCase);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("phases", phaseService.findAll());
-
         return "case_add_form";
     }
 
@@ -81,7 +78,7 @@ public class CaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public String createCase(Model model, @PathVariable("id") Long id) {
+    public String editCase(Model model, @PathVariable("id") Long id) {
         model.addAttribute("activePage", "Cases");
         model.addAttribute("edit", true);
         model.addAttribute("legal_case",
@@ -92,31 +89,30 @@ public class CaseController {
     }
 
     @PostMapping("/add")
-    public String addOrEditProduct(Model model, RedirectAttributes redirectAttributes, LegalCase legalCase) {
+    public String addCase(Model model, LegalCase legalCase) {
         model.addAttribute("activePage", "Cases");
-
-        try {
-            caseService.save(legalCase);
-        } catch (Exception ex) {
-            logger.error("Problem with creating or update case", ex);
-            redirectAttributes.addFlashAttribute("error", true);
-            if (legalCase.getId() == null) {
-                return "redirect:/legal_cases/add";
-            }
-            return "redirect:/legal_cases/edit/" + legalCase.getId();
-        }
+        User user = userService.findByUsername(getAuthName());
+        user.getLegalCases().add(legalCase);
+        legalCase.getUsers().add(user);
+        userService.save(user);
+        caseService.save(legalCase);
         return "redirect:/legal_cases";
     }
+
 
     @PostMapping("/add_event")
     public String addEvent(Model model, @Valid @ModelAttribute EventData eventData, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
         }
-        model.addAttribute("activePage", "Cases");
+        model.addAttribute("activePage", "Case");
         Event event = CommonMapper.INSTANCE.toEvent(eventData);
+        User user = userService.findByUsername(getAuthName());
+        event.getUsers().add(user);
+        user.getEvents().add(event);
         eventService.save(event);
-        return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
+        userService.save(user);
+        return "redirect:/legal_cases/" + event.getLegalCase().getId();
     }
 
     @PostMapping("/add_person")
@@ -149,5 +145,42 @@ public class CaseController {
         return "redirect:/phase_add_form";
     }
 
+    @PostMapping("/upload/{id}")
+    public String handleFileUpload(@RequestParam("file") List<MultipartFile> files, @PathVariable Long id) {
+        LegalCase legalCase = caseService.findById(id).get();
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                String filePath = "files/" + UUID.randomUUID() + (file.getOriginalFilename()).substring(file
+                        .getOriginalFilename().lastIndexOf("."));
+                try (BufferedOutputStream stream =
+                             new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
+                    byte[] bytes = file.getBytes();
+                    stream.write(bytes);
+                    Document document = new Document(file.getOriginalFilename(), filePath);
+                    document.getLegalCases().add(legalCase);
+                    legalCase.getDocuments().add(document);
+                    documentService.save(document);
+                    caseService.save(legalCase);
+                } catch (Exception e) {
+                    throw new RuntimeException("Вам не удалось загрузить " + file.getOriginalFilename() + " => " + e.getMessage());
+                }
+            }
+        } else {
+            return "redirect:/legal_cases/" + legalCase.getId();
+        }
+        return "redirect:/legal_cases/" + legalCase.getId();
+    }
 
+    @GetMapping("/download/{id}")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable Long id) throws IOException {
+        Document document = documentService.findById(id).get();
+        MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, document.getName());
+        File file = new File(document.getFilePath());
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                .contentType(mediaType)
+                .contentLength(file.length())
+                .body(resource);
+    }
 }
