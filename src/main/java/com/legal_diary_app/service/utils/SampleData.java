@@ -20,7 +20,6 @@ public class SampleData {
     private PersonRep personRep;
     private RoleRep roleRep;
     private UserRep userRep;
-    private UserDiaryRep userDiaryRep;
     private CaseRep caseRep;
     private CategoryRep categoryRep;
     private PersonStatusRep personStatusRep;
@@ -29,13 +28,12 @@ public class SampleData {
 
 
     public SampleData(EventRep eventRep, PersonRep personRep, RoleRep roleRep, UserRep userRep,
-                      UserDiaryRep userDiaryRep, CaseRep caseRep, CategoryRep categoryRep,
+                      CaseRep caseRep, CategoryRep categoryRep,
                       PersonStatusRep personStatusRep, PhaseRep phaseRep, DocumentRep documentRep) {
         this.eventRep = eventRep;
         this.personRep = personRep;
         this.roleRep = roleRep;
         this.userRep = userRep;
-        this.userDiaryRep = userDiaryRep;
         this.caseRep = caseRep;
         this.categoryRep = categoryRep;
         this.personStatusRep = personStatusRep;

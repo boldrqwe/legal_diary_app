@@ -4,11 +4,9 @@ package com.legal_diary_app.data;
 import com.legal_diary_app.model.AbstractItem;
 import com.legal_diary_app.model.Document;
 import com.legal_diary_app.model.LegalCase;
+import com.legal_diary_app.model.User;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +21,23 @@ public class DocumentData extends AbstractItem implements Serializable {
 
     List<Document> documents = new ArrayList<>();
 
+
+    private List<User> users = new ArrayList<>();
+
     public DocumentData(String name, String filePath) {
         this.name = name;
         this.filePath = filePath;
     }
 
     public DocumentData() {
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public String getName() {

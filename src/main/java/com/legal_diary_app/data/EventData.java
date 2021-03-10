@@ -4,11 +4,15 @@ import com.legal_diary_app.data.utils.InvalidDateException;
 import com.legal_diary_app.model.AbstractItem;
 import com.legal_diary_app.model.LegalCase;
 import com.legal_diary_app.model.Person;
-import com.legal_diary_app.model.UserDiary;
+
+import com.legal_diary_app.model.User;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 
+import javax.persistence.CascadeType;
+import javax.persistence.ManyToMany;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +23,6 @@ public class EventData extends AbstractItem {
 
 
     private String name;
-
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH")
     private Date beginningDate;
@@ -38,14 +41,20 @@ public class EventData extends AbstractItem {
     private List<Person> persons = new ArrayList<>();
 
 
-    private UserDiary userDiary;
-
-
     private LegalCase legalCase;
+
+    private List<User> users = new ArrayList<>();
 
     public EventData() {
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 
     public String getName() {
         return name;
@@ -66,7 +75,7 @@ public class EventData extends AbstractItem {
                 throw new InvalidDateException("Beginning date should be before endingDate!");
             }
         }
-        this.beginningDate = beginningDate;
+        this.beginningDate =  beginningDate;
     }
 
     public Date getEndingDate() {
@@ -114,13 +123,6 @@ public class EventData extends AbstractItem {
         this.persons = persons;
     }
 
-    public UserDiary getUserDiary() {
-        return userDiary;
-    }
-
-    public void setUserDiary(UserDiary userDiary) {
-        this.userDiary = userDiary;
-    }
 
     public LegalCase getLegalCase() {
         return legalCase;
@@ -130,5 +132,19 @@ public class EventData extends AbstractItem {
         this.legalCase = legalCase;
     }
 
+    public String getBeginningDateFormat(){
+        SimpleDateFormat format = new SimpleDateFormat("dd-M-yyyy hh:mm");
+        return format.format(beginningDate);
+    }
+
+    public String getEndingDateFormat(){
+        SimpleDateFormat format = new SimpleDateFormat("dd-M-yyyy hh:mm");
+        return format.format(endingDate);
+    }
+
+    public String getCreateDateFormat(){
+        SimpleDateFormat format = new SimpleDateFormat("dd-M-yyyy hh:mm");
+        return format.format(getCreateDate());
+    }
 
 }

@@ -6,10 +6,8 @@ import com.legal_diary_app.data.PersonData;
 import com.legal_diary_app.mappers.CommonMapper;
 import com.legal_diary_app.model.LegalCase;
 import com.legal_diary_app.model.Person;
-import com.legal_diary_app.service.CaseService;
-import com.legal_diary_app.service.PersonService;
+import com.legal_diary_app.service.*;
 
-import com.legal_diary_app.service.PersonStatusService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,19 +15,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.ServletContext;
+
 @Controller
 @RequestMapping("/persons")
-public class PersonController {
-
-    private PersonService personService;
-    private PersonStatusService personStatusService;
-    private CaseService caseService;
+public class PersonController  extends CommonController{
 
 
-    public PersonController(PersonService personService, PersonStatusService personStatusService, CaseService caseService) {
-        this.personService = personService;
-        this.personStatusService = personStatusService;
-        this.caseService = caseService;
+    public PersonController(CaseService caseService, EventService eventService, PersonService personService, CategoryService categoryService, PhaseService phaseService, PersonStatusService personStatusService, DocumentService documentService, ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, categoryService, phaseService, personStatusService, documentService, servletContext, userService);
     }
 
     @GetMapping

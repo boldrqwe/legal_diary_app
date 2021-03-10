@@ -61,10 +61,10 @@
                                 </div>
                                 <form th:object="${event}" method="post" th:action="@{/legal_cases/add_event}"
                                       enctype="multipart/form-data">
-                                    <div class="card mb-4">
+                                    <div class="card mb-4" >
                                         <div class="card-body">
                                             <input th:type="hidden" th:field="*{id}">
-                                            <select class="form-control display d-lg-none" id="category"
+                                            <select class="form-control display d-lg-none" id="legal_case"
                                                     th:field="*{legalCase}" required>
                                                 <option
                                                         th:text="${legal_case.name}"

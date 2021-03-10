@@ -14,12 +14,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletContext;
 import javax.validation.Valid;
@@ -29,35 +31,22 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/legal_cases")
-public class CaseController {
+public class CaseController extends CommonController {
     private static final Logger logger = LoggerFactory.getLogger(CaseController.class);
-    private CaseService caseService;
-    private EventService eventService;
-    private PersonService personService;
-    private CategoryService categoryService;
-    private PhaseService phaseService;
-    private PersonStatusService personStatusService;
-    private DocumentService documentService;
-    private final ServletContext servletContext;
-
 
     public CaseController(CaseService caseService, EventService eventService, PersonService personService,
                           CategoryService categoryService, PhaseService phaseService,
                           PersonStatusService personStatusService, DocumentService documentService,
-                          ServletContext servletContext) {
-        this.caseService = caseService;
-        this.eventService = eventService;
-        this.personService = personService;
-        this.categoryService = categoryService;
-        this.phaseService = phaseService;
-        this.personStatusService = personStatusService;
-        this.documentService = documentService;
-        this.servletContext = servletContext;
+                          ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, categoryService, phaseService, personStatusService,
+                documentService, servletContext, userService);
     }
+
 
     @GetMapping
     public String showCases(Model model) {
-        model.addAttribute("legal_cases", CommonMapper.INSTANCE.toCaseDataList(caseService.findAll()));
+        model.addAttribute("legal_cases", CommonMapper.INSTANCE.toCaseDataList(
+                caseService.findAllByUserName(getAuthName())));
         model.addAttribute("activePage", "Cases");
         return "legal_cases";
     }
@@ -89,7 +78,7 @@ public class CaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public String createCase(Model model, @PathVariable("id") Long id) {
+    public String editCase(Model model, @PathVariable("id") Long id) {
         model.addAttribute("activePage", "Cases");
         model.addAttribute("edit", true);
         model.addAttribute("legal_case",
@@ -100,19 +89,13 @@ public class CaseController {
     }
 
     @PostMapping("/add")
-    public String addOrEditProduct(Model model, RedirectAttributes redirectAttributes, LegalCase legalCase) {
+    public String addCase(Model model, LegalCase legalCase) {
         model.addAttribute("activePage", "Cases");
-
-        try {
-            caseService.save(legalCase);
-        } catch (Exception ex) {
-            logger.error("Problem with creating or update case", ex);
-            redirectAttributes.addFlashAttribute("error", true);
-            if (legalCase.getId() == null) {
-                return "redirect:/legal_cases/add";
-            }
-            return "redirect:/legal_cases/edit/" + legalCase.getId();
-        }
+        User user = userService.findByUsername(getAuthName());
+        user.getLegalCases().add(legalCase);
+        legalCase.getUsers().add(user);
+        userService.save(user);
+        caseService.save(legalCase);
         return "redirect:/legal_cases";
     }
 
@@ -122,10 +105,14 @@ public class CaseController {
         if (bindingResult.hasErrors()) {
             return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
         }
-        model.addAttribute("activePage", "Cases");
+        model.addAttribute("activePage", "Case");
         Event event = CommonMapper.INSTANCE.toEvent(eventData);
+        User user = userService.findByUsername(getAuthName());
+        event.getUsers().add(user);
+        user.getEvents().add(event);
         eventService.save(event);
-        return "redirect:/legal_cases/" + eventData.getLegalCase().getId();
+        userService.save(user);
+        return "redirect:/legal_cases/" + event.getLegalCase().getId();
     }
 
     @PostMapping("/add_person")
@@ -196,6 +183,4 @@ public class CaseController {
                 .contentLength(file.length())
                 .body(resource);
     }
-
-
 }

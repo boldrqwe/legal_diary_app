@@ -3,50 +3,38 @@ package com.legal_diary_app.controllers;
 import com.legal_diary_app.data.EventData;
 import com.legal_diary_app.data.PersonData;
 import com.legal_diary_app.mappers.CommonMapper;
-import com.legal_diary_app.model.Document;
 import com.legal_diary_app.model.Event;
-import com.legal_diary_app.model.LegalCase;
 import com.legal_diary_app.model.Person;
-import com.legal_diary_app.service.DocumentService;
-import com.legal_diary_app.service.EventService;
-import com.legal_diary_app.service.PersonService;
-import com.legal_diary_app.service.PersonStatusService;
+import com.legal_diary_app.service.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import javax.validation.Valid;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.List;
-import java.util.UUID;
 
 
 @Controller
 @RequestMapping("/events")
-public class EventController {
-
-    private EventService eventService;
-    private PersonService personService;
-    private PersonStatusService personStatusService;
-    private DocumentService documentService;
+public class EventController extends CommonController {
 
 
-    public EventController(EventService eventService, PersonService personService,
-                           PersonStatusService personStatusService,
-                           DocumentService documentService) {
-        this.eventService = eventService;
-        this.personService = personService;
-        this.personStatusService = personStatusService;
-        this.documentService = documentService;
+    public EventController(CaseService caseService, EventService eventService, PersonService personService, CategoryService categoryService, PhaseService phaseService, PersonStatusService personStatusService, DocumentService documentService, ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, categoryService, phaseService, personStatusService, documentService, servletContext, userService);
     }
 
     @GetMapping
     public String showEvents(Model model) {
-        model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(eventService.findAll()));
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(
+                eventService.findAllByUserName(authentication.getName())));
         model.addAttribute("activePage", "Events");
         model.addAttribute("event", new EventData());
         return "events";
@@ -56,16 +44,19 @@ public class EventController {
     public String showById(@PathVariable Long id, Model model) {
         EventData eventData = CommonMapper.INSTANCE.toEventData(eventService.findById(id).get());
         model.addAttribute("event", eventData);
-        model.addAttribute("persons", CommonMapper.INSTANCE.toPersonDataList(personService.findAllByEventId(id)));
+        model.addAttribute("persons", CommonMapper.INSTANCE.toPersonDataList(
+                personService.findAllByEventId(id)));
         model.addAttribute("documents", documentService.findAllByEventId(id));
         model.addAttribute("person", new PersonData());
-        model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(personStatusService.findAll()));
+        model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(
+                personStatusService.findAll()));
         return "event_show_form";
     }
 
     @GetMapping("/ended")
     public String showEndedEvents(Model model) {
-        model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(eventService.findAllByEndStatus(true)));
+        model.addAttribute("eventList", CommonMapper.INSTANCE.toEventDataList(
+                eventService.findAllByEndStatusAndName(true, getAuthName())));
         return "events_ended";
     }
 
@@ -84,9 +75,8 @@ public class EventController {
         if (bindingResult.hasErrors()) {
             return "redirect:/events";
         }
-        model.addAttribute("activePage", "Cases");
-        Event event = CommonMapper.INSTANCE.toEvent(eventData);
-        eventService.save(event);
+        model.addAttribute("activePage", "Events");
+        eventService.saveEventAndUser(CommonMapper.INSTANCE.toEvent(eventData));
         return "redirect:/events";
     }
 
@@ -94,23 +84,7 @@ public class EventController {
     public String handleFileUpload(@RequestParam("file") List<MultipartFile> files, @PathVariable Long id) {
         Event event = eventService.findById(id).get();
         if (!files.isEmpty()) {
-            for (MultipartFile file : files) {
-                String filePath = "files/" + UUID.randomUUID() + (file.getOriginalFilename()).substring(file
-                        .getOriginalFilename().lastIndexOf("."));
-                try (BufferedOutputStream stream =
-                             new BufferedOutputStream(new FileOutputStream(new File(filePath)))) {
-                    byte[] bytes = file.getBytes();
-                    stream.write(bytes);
-                    Document document = new Document(file.getOriginalFilename(), filePath);
-                    document.getEvents().add(event);
-                    event.getDocuments().add(document);
-                    event.getLegalCase().getDocuments().add(document);
-                    documentService.save(document);
-                    eventService.save(event);
-                } catch (Exception e) {
-                    throw new RuntimeException("Вам не удалось загрузить " + file.getOriginalFilename() + " => " + e.getMessage());
-                }
-            }
+            documentService.saveDocAndEventAndUser(files, event);
         } else {
             return "redirect:/events/" + event.getId();
         }

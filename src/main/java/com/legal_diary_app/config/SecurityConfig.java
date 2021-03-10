@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -24,9 +25,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         try {
 
             http.authorizeRequests()
-                    .antMatchers("/admin/**").hasRole( "ADMIN")
-                    .antMatchers("/diary/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers("/diary**").permitAll()
+                    .antMatchers("/css/*").permitAll()
+                    .antMatchers("/js/*").permitAll()
+                    .antMatchers("/webfonts/*").permitAll()
+                    .antMatchers("/webjars/**").permitAll()
+                    .antMatchers("/registration/**").permitAll()
+                    .antMatchers("/**").authenticated()
                     .and()
                     .formLogin()
                     .loginPage("/login")
@@ -54,5 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationProvider.setUserDetailsService(userService);
         return authenticationProvider;
     }
+
+    @Bean
+    public SecurityContextHolder getSecurityContext(){return new SecurityContextHolder();};
 
 }

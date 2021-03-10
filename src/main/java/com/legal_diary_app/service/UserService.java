@@ -42,6 +42,9 @@ public class UserService implements UserDetailsService {
         return userRep.findByUsername(username);
     }
 
+    public User save(User user){
+        return userRep.save(user);
+    }
 
     public User getCurrentUser(){
         Principal principal = SecurityContextHolder.getContext().getAuthentication();

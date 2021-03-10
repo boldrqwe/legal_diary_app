@@ -20,9 +20,9 @@
 
             <td th:text="${eventList.indexOf(event)+1}"></td>
             <td th:text="${event.name}"></td>
-            <td th:text="${event.createDate}"></td>
-            <td th:text="${event.beginningDate}"></td>
-            <td th:text="${event.endingDate}"></td>
+            <td th:text="${event.getCreateDateFormat()}"></td>
+            <td th:text="${event.getBeginningDateFormat()}"></td>
+            <td th:text="${event.getEndingDateFormat()}"></td>
             <td>
                 <a th:href="@{/events/{id}(id=${event.id})}" type="button"
                    class="btn btn-primary btn-sm btn-pill">Show</a>

@@ -16,4 +16,10 @@ public interface DocumentRep extends CommonRep<Document> {
     @Query(value = "SELECT d from Document d join d.events e where e.id =?1")
     List<Document> findAllByEventId(Long id);
 
+    @Query(value = "select d from Document d join d.users u where u.username = ?1")
+    List<Document> findAllByUserName(String name);
+
+
+
+
 }

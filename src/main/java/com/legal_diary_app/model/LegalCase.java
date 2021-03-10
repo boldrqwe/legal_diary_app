@@ -38,6 +38,10 @@ public class LegalCase extends AbstractItem {
             inverseJoinColumns = {@JoinColumn(name = "legalCase_id")})
     List<Document> documents = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "legalCases" ,cascade = CascadeType.MERGE)
+    private List<User> users = new ArrayList<>();
+
+
 
 
     public LegalCase() {
@@ -51,6 +55,14 @@ public class LegalCase extends AbstractItem {
         this.phase = phase;
         this.events = events;
         this.persons = persons;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public LegalCase(String name) {

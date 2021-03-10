@@ -27,7 +27,7 @@
             <h3 class="mb-4" th:text="EndingDate+':'+' '+ ${event.endingDate}"></h3>
         </div>
         <div>
-            <h3 class="mb-4" th:text="LegalCase+':'+' '+ ${event.legalCase.name}"></h3>
+            <h3 class="mb-4" th:text="'LegalCase'+':'+' '+ ${event?.legalCase?.name}"></h3>
         </div>
         <div>
             <h3 class="mb-4" th:text="'Work'+' '+'status' +':'+' '+ ${event.complete ? 'complete' : 'in work'}"></h3>
@@ -62,12 +62,6 @@
                                     <div class="card mb-4">
                                         <div class="card-body">
                                             <input th:type="hidden" th:field="*{id}">
-                                            <select class="form-control display d-lg-none" id="event_case"
-                                                    th:field="*{cases}" required>
-                                                <option
-                                                        th:text="${event.legalCase.name}"
-                                                        th:value="${event.legalCase.id}"></option>
-                                            </select>
                                             <select class="form-control display d-lg-none" id="event"
                                                     th:field="*{events}" required>
                                                 <option
