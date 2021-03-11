@@ -17,9 +17,14 @@ public abstract class AbstractService<E extends AbstractItem, R extends CommonRe
     protected R repository;
 
     @Autowired
+    protected UserService userService;
+
+    @Autowired
     public AbstractService(R repository) {
         this.repository = repository;
     }
+
+
 
 
     public List<E> findAll() {
@@ -53,4 +58,7 @@ public abstract class AbstractService<E extends AbstractItem, R extends CommonRe
     Authentication authentication = securityContext.getAuthentication();
     return authentication.getName();
 }
+
+
+
 }

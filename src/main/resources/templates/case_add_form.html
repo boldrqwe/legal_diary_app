@@ -28,24 +28,21 @@
                     </div>
                     <div class="form-group">
                         <label for="category">Category</label>
-                        <select class="form-control" id="category" th:field="*{category}" required>
-                            <option th:each="cat : ${categories}"
-                                    th:text="${cat.name}"
-                                    th:value="${cat.id}"></option>
-                        </select>
+                            <input th:field="*{category}" type="text" class="form-control"
+                                   id="category"
+                                   placeholder="Enter case category" required>
+                        </div>
                         <div class="form-group">
                             <label for="number">Number №</label>
                             <input th:field="*{number}" type="text" class="form-control" id="number"
                                    placeholder="Enter case number" required>
                         </div>
-                        <div class="form-group">
-                            <label for="phase">Phase</label>
-                            <select class="form-control" id="phase" th:field="*{phase}" required>
-                                <option th:each="phase : ${phases}"
-                                        th:text="${phase.name}"
-                                        th:value="${phase.id}"></option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label for="phase">Phase</label>
+                        <input th:field="*{phase}" type="text" class="form-control"
+                               id="phase"
+                               placeholder="Enter case phase" required>
+                    </div>
                         <div class="card-footer bg-white">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>

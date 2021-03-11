@@ -13,20 +13,64 @@
     <div th:replace="fragments/sidebar :: sidebar"></div>
 
     <div class="content p-4">
+        <form th:object="${legal_case}" method="post" th:action="@{/legal_cases/{id}/edit/(id=${legal_case.id})}">
+            <div>
+                    <h2 style="display: inline" th:text="Case+':'+' '+ ${legal_case.name}"></h2>
+                <span class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(61px, 33px, 0px);">
+                       <input th:field="*{name}" type="text" class="form-control" id="legal_case_name"
+                                                                 placeholder="Enter case name" required>
+                    </div>
+                </span>
+            </div>
+            <div>
+                <h2 style="display: inline" th:text="'№'+':'+' '+ ${legal_case.number}"></h2>
+                <span class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(61px, 33px, 0px);">
+                       <input th:field="*{number}" type="text" class="form-control" id="legal_case_number"
+                                                                 placeholder="Enter case name" required>
+                    </div>
+                </span>
+            </div>
+            <div>
+                <h2 style="display: inline" th:text="Category+':'+' '+ ${legal_case.category}"></h2>
+                <span class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(61px, 60px, 0px);">
+                        <input th:field="*{category}" type="text" class="form-control" id="legal_case_category"
+                                                                  placeholder="Enter category name" required>
+                    </div>
+                </span>
+            </div>
+            <div>
+                <h2 style="display: inline" th:text="Phase+':'+' '+ ${legal_case.phase}"></h2>
+                <span class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <input th:field="*{phase}" type="text" class="form-control" id="legal_case_phase"
+                               placeholder="Enter phase name" required>
 
-        <div>
-            <h2 class="mb-4" th:text="Case+':'+' '+ ${legal_case.name}"></h2>
-        </div>
-        <div>
-            <h3 class="mb-4" th:text="'№'+':'+' '+ ${legal_case.number}"></h3>
-        </div>
-        <div>
-            <h3 class="mb-4" th:text="Category+':'+' '+ ${legal_case.category}"></h3>
-        </div>
-
-        <div>
-            <h3 class="mb-4" th:text="Phase+':'+' '+ ${legal_case.phase}"></h3>
-        </div>
+                    </div>
+                </span>
+            </div>
+            <input th:type="hidden" th:field="*{id}">
+            <input th:type="hidden" th:field="*{events}">
+            <input th:type="hidden" th:field="*{persons}">
+            <input th:type="hidden" th:field="*{documents}">
+            <div class="card-footer bg-white">
+                <button type="submit" class="btn btn-primary">Submit Changes</button>
+            </div>
+        </form>
         <form th:action="@{/legal_cases/{id}/delete(id=${legal_case.id})}" th:method="delete" class="d-inline">
             <button class="btn btn-icon btn-pill btn-danger" data-toggle="tooltip" title="Delete">
                 <i class="fa fa-fw fa-trash"></i>
@@ -61,7 +105,7 @@
                                 </div>
                                 <form th:object="${event}" method="post" th:action="@{/legal_cases/add_event}"
                                       enctype="multipart/form-data">
-                                    <div class="card mb-4" >
+                                    <div class="card mb-4">
                                         <div class="card-body">
                                             <input th:type="hidden" th:field="*{id}">
                                             <select class="form-control display d-lg-none" id="legal_case"
@@ -82,7 +126,9 @@
                                                            class="form-control"
                                                            id="beginning_date"
                                                            placeholder="Example: 2021-01-01 12:30" required>
-                                                    <p th:class="text-danger" th:if="${#fields.hasErrors('beginningDate')}" th:errors="*{beginningDate}">Incorrect Date</p>
+                                                    <p th:class="text-danger"
+                                                       th:if="${#fields.hasErrors('beginningDate')}"
+                                                       th:errors="*{beginningDate}">Incorrect Date</p>
 
                                                 </div>
                                                 <div class="form-group">
@@ -91,7 +137,8 @@
                                                            class="form-control"
                                                            id="ending_date" placeholder="Example: 2021-01-01 12:30"
                                                            required>
-                                                    <p th:class="text-danger" th:if="${#fields.hasErrors('endingDate')}" th:errors="*{endingDate}">Incorrect Date</p>
+                                                    <p th:class="text-danger" th:if="${#fields.hasErrors('endingDate')}"
+                                                       th:errors="*{endingDate}">Incorrect Date</p>
                                                 </div>
                                                 <div class="card-footer bg-white">
                                                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -156,15 +203,14 @@
                                                     <label for="person_name">Phone</label>
                                                     <input th:field="*{phone}" type="text" class="form-control"
                                                            id="person_phone"
-                                                           placeholder="Enter person patronymic" required>
+                                                           placeholder="Enter person phone" required>
                                                 </div>
-                                                <select class="form-control display" id="person_status"
-                                                        th:field="*{personStatus}" required>
-                                                    <option
-                                                            th:each="status: ${statusList}"
-                                                            th:text="${status.name}"
-                                                            th:value="${status.id}"></option>
-                                                </select>
+                                                <div class="form-group">
+                                                    <label for="person_name">Phone</label>
+                                                    <input th:field="*{personStatus}" type="text" class="form-control"
+                                                           id="person_status"
+                                                           placeholder="Enter person status" required>
+                                                </div>
                                                 <div class="card-footer bg-white">
                                                     <button type="submit" class="btn btn-primary">Submit</button>
                                                 </div>
@@ -192,15 +238,15 @@
                              data-parent="#accordionExample" style="">
                             <div class="card-body">
                                 <div class="card-link mb-4">
-                                    <form  method="POST" enctype="multipart/form-data"
-                                           th:action="@{/legal_cases/upload/{id}(id=${legal_case.id})}">
+                                    <form method="POST" enctype="multipart/form-data"
+                                          th:action="@{/legal_cases/upload/{id}(id=${legal_case.id})}">
                                         File to upload: <input type="file" name="file" required multiple>
                                         <!--                        <p th:if="${#fields.hasErrors()}" th:errors="file"></p>-->
                                         <br/> <input class="btn btn-primary" type="submit"
                                                      value="Upload"> Press here to upload the file!
                                     </form>
                                 </div>
-                                <table  id="documents" class="table table-hover" cellspacing="0"
+                                <table id="documents" class="table table-hover" cellspacing="0"
                                        width="100%">
                                     <thead>
                                     <th>№</th>
@@ -214,14 +260,18 @@
                                         <td th:text="${document.name}"></td>
                                         <td th:text="${document.createDate}"></td>
                                         <td>
-                                            <a th:title="Download" download th:href="@{/legal_cases/download/{id}(id=${document.id})}"><i class="btn btn-primary btn-sm btn-pill">Download</i></a>
-                                            <a th:href="@{/legal_cases/{id}/edit}" class="btn btn-icon btn-pill btn-primary"
+                                            <a th:title="Download" download
+                                               th:href="@{/legal_cases/download/{id}(id=${document.id})}"><i
+                                                    class="btn btn-primary btn-sm btn-pill">Download</i></a>
+                                            <a th:href="@{/legal_cases/{id}/edit}"
+                                               class="btn btn-icon btn-pill btn-primary"
                                                data-toggle="tooltip" title="Edit">
                                                 <i class="fa fa-fw fa-edit"></i>
                                             </a>
                                             <form th:action="@{/legal_cases/{id}/delete}" th:method="delete"
                                                   class="d-inline">
-                                                <button class="btn btn-icon btn-pill btn-danger" data-toggle="tooltip" title="Delete">
+                                                <button class="btn btn-icon btn-pill btn-danger" data-toggle="tooltip"
+                                                        title="Delete">
                                                     <i class="fa fa-fw fa-trash"></i>
                                                 </button>
                                             </form>
@@ -237,6 +287,7 @@
         </div>
     </div>
 </div>
+
 
 <script th:replace="fragments/footer :: scripts"></script>
 

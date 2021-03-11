@@ -13,8 +13,7 @@ import java.util.List;
 
 @Service
 public class EventService extends AbstractService<Event, EventRep> {
-    @Autowired
-    UserService userService;
+
     @Autowired
     PersonService personService;
     @Autowired

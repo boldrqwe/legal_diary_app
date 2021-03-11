@@ -24,12 +24,22 @@ public class DocumentData extends AbstractItem implements Serializable {
 
     private List<User> users = new ArrayList<>();
 
+    List<LegalCase> legalCases = new ArrayList<>();
+
     public DocumentData(String name, String filePath) {
         this.name = name;
         this.filePath = filePath;
     }
 
     public DocumentData() {
+    }
+
+    public List<LegalCase> getLegalCases() {
+        return legalCases;
+    }
+
+    public void setLegalCases(List<LegalCase> legalCases) {
+        this.legalCases = legalCases;
     }
 
     public List<User> getUsers() {

@@ -24,8 +24,8 @@ import java.util.List;
 public class DocumentController extends CommonController {
 
 
-    public DocumentController(CaseService caseService, EventService eventService, PersonService personService, CategoryService categoryService, PhaseService phaseService, PersonStatusService personStatusService, DocumentService documentService, ServletContext servletContext, UserService userService) {
-        super(caseService, eventService, personService, categoryService, phaseService, personStatusService, documentService, servletContext, userService);
+    public DocumentController(CaseService caseService, EventService eventService, PersonService personService,  DocumentService documentService, ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, documentService, servletContext, userService);
     }
 
     @GetMapping

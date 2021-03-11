@@ -18,10 +18,10 @@ public class PersonData extends AbstractPersonality {
 
     private String patronymic;
 
-    private PersonStatus personStatus = null;
+    private String personStatus;
 
 
-    private Date birthday= null;;
+    private Date birthday;
 
 
     private List<Event> events = new ArrayList<>();
@@ -63,11 +63,11 @@ public class PersonData extends AbstractPersonality {
         this.patronymic = patronymic;
     }
 
-    public PersonStatus getPersonStatus() {
+    public String getPersonStatus() {
         return personStatus;
     }
 
-    public void setPersonStatus(PersonStatus personStatus) {
+    public void setPersonStatus(String personStatus) {
         this.personStatus = personStatus;
     }
 

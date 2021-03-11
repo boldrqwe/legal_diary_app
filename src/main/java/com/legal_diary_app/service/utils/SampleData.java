@@ -21,23 +21,18 @@ public class SampleData {
     private RoleRep roleRep;
     private UserRep userRep;
     private CaseRep caseRep;
-    private CategoryRep categoryRep;
-    private PersonStatusRep personStatusRep;
-    private PhaseRep phaseRep;
+
     private DocumentRep documentRep;
 
 
     public SampleData(EventRep eventRep, PersonRep personRep, RoleRep roleRep, UserRep userRep,
-                      CaseRep caseRep, CategoryRep categoryRep,
-                      PersonStatusRep personStatusRep, PhaseRep phaseRep, DocumentRep documentRep) {
+                      CaseRep caseRep,
+                      DocumentRep documentRep) {
         this.eventRep = eventRep;
         this.personRep = personRep;
         this.roleRep = roleRep;
         this.userRep = userRep;
         this.caseRep = caseRep;
-        this.categoryRep = categoryRep;
-        this.personStatusRep = personStatusRep;
-        this.phaseRep = phaseRep;
         this.documentRep = documentRep;
     }
 
@@ -93,39 +88,8 @@ public class SampleData {
         Person person10 = new Person("Боярышникова", "Людмила", "Карласовна");
         Person person11 = new Person("Троекурово", "Алена", "Гагамедова");
 
-        Category category = new Category("Уголовный процесс");
-        Category category1 = new Category("Гражданский процесс");
-        Category category2 = new Category("Административный процесс");
-        Category category3 = new Category("Арбитражный процесс");
-
-        PersonStatus personStatus1 = new PersonStatus("Свидетель");
-        PersonStatus personStatus2 = new PersonStatus("Подозреваемый");
-        PersonStatus personStatus3 = new PersonStatus("Обвиняемый");
-        PersonStatus personStatus4 = new PersonStatus("Подсудимый");
-        PersonStatus personStatus5 = new PersonStatus("Истец");
-        PersonStatus personStatus6 = new PersonStatus("Гражданский Истец");
-        PersonStatus personStatus7 = new PersonStatus("Ответчик");
-        PersonStatus personStatus8 = new PersonStatus("Третье лицо");
-        PersonStatus personStatus9 = new PersonStatus("Следователь");
-        PersonStatus personStatus10 = new PersonStatus("Прокурор");
-        PersonStatus personStatus11 = new PersonStatus("Судья");
-        PersonStatus personStatus12 = new PersonStatus("Дознаватель");
-        PersonStatus personStatus13 = new PersonStatus("Дознаватель");
-
-        Phase phase1 = new Phase("Возбуждение уголовного дела");
-        Phase phase2 = new Phase("Преварительное расследование");
-        Phase phase3 = new Phase("Приостановлено");
-        Phase phase4 = new Phase("Подача искового заявления");
-        Phase phase5 = new Phase("Аппеляция");
-        Phase phase6 = new Phase("Кассация");
-        Phase phase7 = new Phase("Возобновление дела по вновь открывшимся основаниям");
-
-        phaseRep.saveAll(Arrays.asList(phase1, phase2, phase3, phase4, phase5, phase6, phase7));
 
 
-        personStatusRep.saveAll(Arrays.asList(personStatus1, personStatus2, personStatus3, personStatus4, personStatus5,
-                personStatus6, personStatus7, personStatus8, personStatus9, personStatus10, personStatus11, personStatus12,
-                personStatus13));
 
 
         List<Event> eventList = new ArrayList<>();
@@ -133,18 +97,20 @@ public class SampleData {
 
 
         LegalCase legalCase = new LegalCase();
-        legalCase.setCategory(category);
+
         legalCase.setEvents(eventList);
         legalCase.setName("Суд");
         personRep.saveAll(Arrays.asList(person1, person2, person3, person4, person5, person6, person7, person8, person9,
                 person10, person11));
         legalCase.setPersons(Arrays.asList(person1));
 
-        categoryRep.saveAll(Arrays.asList(category, category1, category2, category3));
+
         eventRep.saveAll(Arrays.asList(event, event2, event3));
         event.setLegalCase(legalCase);
         event2.setLegalCase(legalCase);
         event3.setLegalCase(legalCase);
+        user1.getLegalCases().add(legalCase);
+        legalCase.getUsers().add(user1);
         legalCase.setEvents(eventList);
         caseRep.save(legalCase);
         eventRep.saveAll(Arrays.asList(event, event2, event3));

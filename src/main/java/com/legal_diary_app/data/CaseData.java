@@ -9,7 +9,6 @@ import java.util.List;
 
 public class CaseData extends AbstractItem implements Serializable {
 
-    private Long id;
 
     private String name;
 
@@ -17,10 +16,10 @@ public class CaseData extends AbstractItem implements Serializable {
     private String number;
 
 
-    private Category category;
+    private String category;
 
 
-    private Phase phase;
+    private String phase;
 
 
     private List<Event> events = new ArrayList<>();
@@ -29,6 +28,16 @@ public class CaseData extends AbstractItem implements Serializable {
 
 
     private List<User> users = new ArrayList<>();
+
+    List<Document> documents = new ArrayList<>();
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
 
     public List<User> getUsers() {
         return users;
@@ -54,19 +63,19 @@ public class CaseData extends AbstractItem implements Serializable {
         this.number = number;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public Phase getPhase() {
+    public String getPhase() {
         return phase;
     }
 
-    public void setPhase(Phase phase) {
+    public void setPhase(String phase) {
         this.phase = phase;
     }
 
@@ -86,13 +95,4 @@ public class CaseData extends AbstractItem implements Serializable {
         this.persons = persons;
     }
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
