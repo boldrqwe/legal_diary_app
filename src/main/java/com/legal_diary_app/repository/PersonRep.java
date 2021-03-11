@@ -19,4 +19,7 @@ public interface PersonRep extends CommonRep<Person>  {
     @Query(value ="select p from Person p join p.events e where e.id = ?1")
     List<Person> findAllByEventId(Long id);
 
+    @Query(value = "select p from Person p join p.users u where  u.username = ?1")
+    List<Person> findAllByUserName(String name);
+
 }

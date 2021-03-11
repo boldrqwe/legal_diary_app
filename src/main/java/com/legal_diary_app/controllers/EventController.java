@@ -25,8 +25,8 @@ import java.util.List;
 public class EventController extends CommonController {
 
 
-    public EventController(CaseService caseService, EventService eventService, PersonService personService, CategoryService categoryService, PhaseService phaseService, PersonStatusService personStatusService, DocumentService documentService, ServletContext servletContext, UserService userService) {
-        super(caseService, eventService, personService, categoryService, phaseService, personStatusService, documentService, servletContext, userService);
+    public EventController(CaseService caseService, EventService eventService, PersonService personService, DocumentService documentService, ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, documentService, servletContext, userService);
     }
 
     @GetMapping
@@ -48,8 +48,6 @@ public class EventController extends CommonController {
                 personService.findAllByEventId(id)));
         model.addAttribute("documents", documentService.findAllByEventId(id));
         model.addAttribute("person", new PersonData());
-        model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(
-                personStatusService.findAll()));
         return "event_show_form";
     }
 

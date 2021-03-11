@@ -22,29 +22,28 @@ import javax.servlet.ServletContext;
 public class PersonController  extends CommonController{
 
 
-    public PersonController(CaseService caseService, EventService eventService, PersonService personService, CategoryService categoryService, PhaseService phaseService, PersonStatusService personStatusService, DocumentService documentService, ServletContext servletContext, UserService userService) {
-        super(caseService, eventService, personService, categoryService, phaseService, personStatusService, documentService, servletContext, userService);
+    public PersonController(CaseService caseService, EventService eventService, PersonService personService,
+                            DocumentService documentService, ServletContext servletContext, UserService userService) {
+        super(caseService, eventService, personService, documentService, servletContext, userService);
     }
 
     @GetMapping
     public String showPersons(Model model){
-        model.addAttribute("persons", personService.findAll());
+        model.addAttribute("persons", personService.findAllByUserName(getAuthName()));
         model.addAttribute("person", new PersonData());
-        model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(personStatusService.findAll()));
         return "persons";
     }
 
-    @GetMapping("{id}edit")
+    @GetMapping("/{id}/edit")
     public String showPerson(@PathVariable Long id, Model model){
         model.addAttribute("person", CommonMapper.INSTANCE.toPersonData(personService.findById(id).get()));
-        model.addAttribute("case_list", CommonMapper.INSTANCE.toCaseDataList(caseService.findAll()));
+        model.addAttribute("case_list", CommonMapper.INSTANCE.toCaseDataList(caseService.findAllByUserName(getAuthName())));
         return "person_form";
     }
 
     @PostMapping("/add_person")
     public String addPerson(Model model, PersonData personData) {
-        Person person = CommonMapper.INSTANCE.toPerson(personData);
-        personService.save(person);
+        personService.savePersonAndUser(CommonMapper.INSTANCE.toPerson(personData));
         model.addAttribute("activePage", "Cases");
         return "redirect:/persons";
     }

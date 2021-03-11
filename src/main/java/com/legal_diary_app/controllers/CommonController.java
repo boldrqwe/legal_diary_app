@@ -13,24 +13,17 @@ public class CommonController {
     protected CaseService caseService;
     protected EventService eventService;
     protected PersonService personService;
-    protected CategoryService categoryService;
-    protected PhaseService phaseService;
-    protected PersonStatusService personStatusService;
     protected DocumentService documentService;
     protected final ServletContext servletContext;
     protected UserService userService;
 
 
     public CommonController(CaseService caseService, EventService eventService, PersonService personService,
-                          CategoryService categoryService, PhaseService phaseService,
-                          PersonStatusService personStatusService, DocumentService documentService,
+                         DocumentService documentService,
                           ServletContext servletContext, UserService userService) {
         this.caseService = caseService;
         this.eventService = eventService;
         this.personService = personService;
-        this.categoryService = categoryService;
-        this.phaseService = phaseService;
-        this.personStatusService = personStatusService;
         this.documentService = documentService;
         this.servletContext = servletContext;
         this.userService = userService;

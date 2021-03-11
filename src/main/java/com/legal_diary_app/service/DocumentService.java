@@ -17,8 +17,6 @@ import java.util.UUID;
 
 @Service
 public class DocumentService extends AbstractService<Document, DocumentRep> {
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private EventService eventService;

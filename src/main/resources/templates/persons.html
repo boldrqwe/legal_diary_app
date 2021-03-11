@@ -50,13 +50,12 @@
                                            id="person_phone"
                                            placeholder="Enter person patronymic" required>
                                 </div>
-                                <select class="form-control display" id="person_status"
-                                        th:field="*{personStatus}" required>
-                                    <option
-                                            th:each="status: ${statusList}"
-                                            th:text="${status.name}"
-                                            th:value="${status.id}"></option>
-                                </select>
+                                <div class="form-group">
+                                    <label for="person_name">Phone</label>
+                                    <input th:field="*{personStatus}" type="text" class="form-control"
+                                           id="person_status"
+                                           placeholder="Enter person status" required>
+                                </div>
                                 <div class="card-footer bg-white">
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
@@ -79,7 +78,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="person : ${persons}">
-                        <td th:text="${person.id}"></td>
+                        <td th:text="${persons.indexOf(persons)+1}"></td>
                         <td th:text="${person.surname}"></td>
                         <td th:text="${person.name}"></td>
                         <td th:text="${person.patronymic}"></td>

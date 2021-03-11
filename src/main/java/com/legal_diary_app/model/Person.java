@@ -25,9 +25,8 @@ public class Person extends AbstractPersonality {
     private String patronymic;
 
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "status_id")
-    private PersonStatus personStatus;
+    @Column(name = "person_status")
+    private String personStatus;
 
 
     @Column(name = "birthday")
@@ -98,14 +97,6 @@ public class Person extends AbstractPersonality {
         this.patronymic = patronymic;
     }
 
-    public PersonStatus getPersonStatus() {
-        return personStatus;
-    }
-
-    public void setPersonStatus(PersonStatus personStatus) {
-        this.personStatus = personStatus;
-    }
-
     public Date getBirthday() {
         return birthday;
     }
@@ -137,5 +128,13 @@ public class Person extends AbstractPersonality {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public String getPersonStatus() {
+        return personStatus;
+    }
+
+    public void setPersonStatus(String personStatus) {
+        this.personStatus = personStatus;
     }
 }

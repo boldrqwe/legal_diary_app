@@ -4,7 +4,6 @@ import com.legal_diary_app.controllers.utils.MediaTypeUtils;
 import com.legal_diary_app.data.CaseData;
 import com.legal_diary_app.data.EventData;
 import com.legal_diary_app.data.PersonData;
-import com.legal_diary_app.data.PhaseData;
 import com.legal_diary_app.mappers.CommonMapper;
 import com.legal_diary_app.model.*;
 import com.legal_diary_app.service.*;
@@ -14,9 +13,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,11 +30,9 @@ import java.util.UUID;
 public class CaseController extends CommonController {
     private static final Logger logger = LoggerFactory.getLogger(CaseController.class);
 
-    public CaseController(CaseService caseService, EventService eventService, PersonService personService,
-                          CategoryService categoryService, PhaseService phaseService,
-                          PersonStatusService personStatusService, DocumentService documentService,
+    public CaseController(CaseService caseService, EventService eventService, PersonService personService, DocumentService documentService,
                           ServletContext servletContext, UserService userService) {
-        super(caseService, eventService, personService, categoryService, phaseService, personStatusService,
+        super(caseService, eventService, personService,
                 documentService, servletContext, userService);
     }
 
@@ -57,8 +51,6 @@ public class CaseController extends CommonController {
         model.addAttribute("add", true);
         LegalCase legalCase = new LegalCase();
         model.addAttribute("legal_case", legalCase);
-        model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("phases", phaseService.findAll());
         return "case_add_form";
     }
 
@@ -73,30 +65,24 @@ public class CaseController extends CommonController {
         model.addAttribute("documents", documentService.findAllByLegalCaseId(id));
         model.addAttribute("event", new EventData());
         model.addAttribute("person", new PersonData());
-        model.addAttribute("statusList", CommonMapper.INSTANCE.toPersonStatusDataList(personStatusService.findAll()));
         return "case_show_form";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String editCase(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("activePage", "Cases");
-        model.addAttribute("edit", true);
-        model.addAttribute("legal_case",
-                caseService.findById(id).orElseThrow(RuntimeException::new));
-        model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("phases", phaseService.findAll());
-        return "case_edit_form";
     }
 
     @PostMapping("/add")
     public String addCase(Model model, LegalCase legalCase) {
         model.addAttribute("activePage", "Cases");
-        User user = userService.findByUsername(getAuthName());
+        User user = userService.getCurrentUser();
         user.getLegalCases().add(legalCase);
         legalCase.getUsers().add(user);
         userService.save(user);
         caseService.save(legalCase);
         return "redirect:/legal_cases";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editCase(CaseData caseData) {
+        caseService.save(CommonMapper.INSTANCE.toCase(caseData));
+        return "redirect:/legal_cases/" + caseData.getId();
     }
 
 
@@ -130,19 +116,6 @@ public class CaseController extends CommonController {
     public String delete(@PathVariable Long id) {
         caseService.deleteById(id);
         return "redirect:/legal_cases";
-    }
-
-    @GetMapping("/add_phase")
-    public String addPhase(Model model) {
-        model.addAttribute("phase", new PhaseData());
-        return "phase_add_form";
-    }
-
-    @PostMapping("/add_phase")
-    public String addPhase(PhaseData phaseData) {
-        Phase phase = CommonMapper.INSTANCE.toPhase(phaseData);
-        phaseService.save(phase);
-        return "redirect:/phase_add_form";
     }
 
     @PostMapping("/upload/{id}")

@@ -14,13 +14,11 @@ public class LegalCase extends AbstractItem {
     @Column(name = "number")
     private String number;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @Column(name = "category")
+    private String category;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "phase_id")
-    private Phase phase;
+    @Column(name = "phase")
+    private String phase;
 
     @OneToMany(mappedBy = "legalCase", cascade = CascadeType.MERGE)
     private List<Event> events = new ArrayList<>();
@@ -32,27 +30,23 @@ public class LegalCase extends AbstractItem {
             inverseJoinColumns = {@JoinColumn(name = "legalCase_id")})
     private List<Person> persons = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "docs_cases",
             joinColumns = {@JoinColumn(name = "doc_id")},
             inverseJoinColumns = {@JoinColumn(name = "legalCase_id")})
     List<Document> documents = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "legalCases" ,cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "legalCases", cascade = CascadeType.MERGE)
     private List<User> users = new ArrayList<>();
-
-
 
 
     public LegalCase() {
 
     }
 
-    public LegalCase(String name, String number, Category category, Phase phase, List<Event> events, List<Person> persons) {
+    public LegalCase(String name, String number, List<Event> events, List<Person> persons) {
         this.name = name;
         this.number = number;
-        this.category = category;
-        this.phase = phase;
         this.events = events;
         this.persons = persons;
     }
@@ -85,22 +79,6 @@ public class LegalCase extends AbstractItem {
         this.number = number;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Phase getPhase() {
-        return phase;
-    }
-
-    public void setPhase(Phase phase) {
-        this.phase = phase;
-    }
-
     public List<Event> getEvents() {
         return events;
     }
@@ -123,5 +101,21 @@ public class LegalCase extends AbstractItem {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getPhase() {
+        return phase;
+    }
+
+    public void setPhase(String phase) {
+        this.phase = phase;
     }
 }

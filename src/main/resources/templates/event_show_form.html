@@ -6,10 +6,6 @@
 
 <body class="bg-light">
 
-<th:block th:if="${error}">
-    <div th:replace="fragments/header :: alert"></div>
-</th:block>
-
 <div th:replace="fragments/header :: header"></div>
 
 <div class="d-flex">
@@ -92,13 +88,12 @@
                                                        id="person_phone"
                                                        placeholder="Enter person patronymic" required>
                                             </div>
-                                            <select class="form-control display" id="person_status"
-                                                    th:field="*{personStatus}" required>
-                                                <option
-                                                        th:each="status: ${statusList}"
-                                                        th:text="${status.name}"
-                                                        th:value="${status.id}"></option>
-                                            </select>
+                                            <div class="form-group">
+                                                <label for="person_name">Phone</label>
+                                                <input th:field="*{personStatus}" type="text" class="form-control"
+                                                       id="person_status"
+                                                       placeholder="Enter person status" required>
+                                            </div>
                                             <div class="card-footer bg-white">
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
