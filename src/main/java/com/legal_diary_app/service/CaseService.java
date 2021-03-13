@@ -15,7 +15,7 @@ public class CaseService extends AbstractService<LegalCase, CaseRep> {
     }
 
     public List<LegalCase> findAllByUserName(String name){
-        return super.repository.finaAllByUserName(name);
+        return super.repository.findAllByUserName(name);
     }
 
 }

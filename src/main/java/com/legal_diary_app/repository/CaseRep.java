@@ -14,5 +14,5 @@ public interface CaseRep extends CommonRep<LegalCase> {
 
 
     @Query(value = "select l from  LegalCase l join l.users u where u.username = ?1")
-    List<LegalCase> finaAllByUserName(String name);
+    List<LegalCase> findAllByUserName(String name);
 }

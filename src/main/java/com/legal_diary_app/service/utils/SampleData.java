@@ -36,7 +36,7 @@ public class SampleData {
         this.documentRep = documentRep;
     }
 
-    @PostConstruct
+
     public void init() throws ParseException {
         User user1 = new User();
         user1.setUsername("alex");

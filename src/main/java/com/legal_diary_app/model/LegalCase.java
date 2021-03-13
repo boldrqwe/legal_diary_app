@@ -44,6 +44,11 @@ public class LegalCase extends AbstractItem {
 
     }
 
+    public LegalCase(String name, String number){
+        this.name = name;
+        this.number = number;
+    }
+
     public LegalCase(String name, String number, List<Event> events, List<Person> persons) {
         this.name = name;
         this.number = number;
