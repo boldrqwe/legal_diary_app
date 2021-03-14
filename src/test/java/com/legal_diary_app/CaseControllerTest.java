@@ -55,43 +55,10 @@ public class CaseControllerTest {
     @WithMockUser(value = "admin", password = "admin", roles = {"ADMIN"})
     @Test
     public void showAllCasesTest() throws Exception {
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("admin", "admin");
-        Mockito.when(authentication.getPrincipal()).thenReturn(principal);
-        LegalCase legalCase = new LegalCase("1", "2");
-        Mockito.when(authentication.getName()).thenReturn("admin");
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        UserService userService = Mockito.mock(UserService.class);
-        User user = new User();
-        user.setUsername(authentication.getName());
-        CaseService caseService = Mockito.mock(CaseService.class);
-        Mockito.when(userService.findByUsername(authentication.getName())).thenReturn(user);
-        user.setLegalCases((List.of(legalCase)));
-        legalCase.setUsers(List.of(user));
-        userService.save(user);
-        caseService.save(legalCase);
-        CaseRep caseRep = Mockito.mock(CaseRep.class);
-        Mockito.when(caseRep.findAllByUserName(user.getUsername())).thenReturn(List.of(legalCase));
-        List<LegalCase> legalCases = caseRep.findAllByUserName(user.getUsername());
-        List<CaseData> caseDataList = CommonMapper.INSTANCE.toCaseDataList(legalCases);
         mvc.perform(get("/legal_cases")).andExpect(status().isOk())
-                .andExpect(model().attributeExists("legal_cases"))
-                .andExpect(model().attribute("legal_cases", new BaseMatcher<List<CaseData>>() {
-                    @Override
-                    public void describeTo(Description description) {
-                    }
+                .andExpect(model().attributeExists("legal_cases"));
 
-                    @Override
-                    public boolean matches(Object o) {
-                        if (o instanceof ArrayList) {
-                            List<CaseData> newCasesData = (List<CaseData>) o;
-                            return newCasesData.get(0).equals(caseDataList.get(0));
-                        }
-                        return false;
-                    }
-                }));
+
     }
 
     @WithMockUser(value = "admin", password = "admin", roles = {"ADMIN"})
